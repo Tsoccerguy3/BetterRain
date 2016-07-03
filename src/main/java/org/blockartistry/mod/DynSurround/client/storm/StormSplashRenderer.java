@@ -1,7 +1,7 @@
 /*
- * This file is part of Dynamic Surroundings, licensed under the MIT License (MIT).
+ * This file is part of Dynamic Surroundings Unofficial, licensed under the MIT License (MIT).
  *
- * Copyright (c) OreCruncher
+ * Copyright (c) OreCruncher, Abastro
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -82,7 +82,7 @@ public class StormSplashRenderer {
 		return MathHelper
 				.clamp_float(
 						(float) (StormProperties.getCurrentVolume()
-								+ GENERATOR.getValue(DiurnalUtils.getClockTime(world) / 100, 1) / 5.0F),
+								+ GENERATOR.getValue(world.getCelestialAngle(1.0f) * 240.0f - 60.0f, 1) / 5.0F),
 						0.0F, 1.0F);
 	}
 

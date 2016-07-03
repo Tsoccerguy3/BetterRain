@@ -59,11 +59,11 @@ public final class PlayerUtils {
 
 		if (!getTrue) {
 			if (isUnderWater(player)) {
-				if (REGEX_DEEP_OCEAN.matcher(biome.biomeName).matches())
+				if (REGEX_DEEP_OCEAN.matcher(biome.getBiomeName()).matches())
 					biome = BiomeRegistry.UNDERDEEPOCEAN;
-				else if (REGEX_OCEAN.matcher(biome.biomeName).matches())
+				else if (REGEX_OCEAN.matcher(biome.getBiomeName()).matches())
 					biome = BiomeRegistry.UNDEROCEAN;
-				else if (REGEX_RIVER.matcher(biome.biomeName).matches())
+				else if (REGEX_RIVER.matcher(biome.getBiomeName()).matches())
 					biome = BiomeRegistry.UNDERRIVER;
 				else
 					biome = BiomeRegistry.UNDERWATER;
@@ -80,14 +80,14 @@ public final class PlayerUtils {
 	public static int getPlayerDimension(@Nonnull final EntityPlayer player) {
 		if (player == null || player.worldObj == null)
 			return -256;
-		return player.worldObj.provider.getDimensionId();
+		return player.worldObj.provider.getDimension();
 	}
 
 	public static boolean isUnderWater(final EntityPlayer player) {
 		final int x = MathHelper.floor_double(player.posX);
 		final int y = MathHelper.floor_double(player.posY + player.getEyeHeight());
 		final int z = MathHelper.floor_double(player.posZ);
-		return player.worldObj.getBlockState(new BlockPos(x, y, z)).getBlock().getMaterial() == Material.water;
+		return player.worldObj.getBlockState(new BlockPos(x, y, z)).getMaterial() == Material.WATER;
 	}
 
 	public static boolean isUnderGround(final EntityPlayer player, final int offset) {

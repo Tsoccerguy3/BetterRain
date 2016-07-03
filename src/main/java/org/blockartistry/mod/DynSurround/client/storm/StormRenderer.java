@@ -37,17 +37,17 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class StormRenderer implements IAtmosRenderer {
@@ -75,7 +75,7 @@ public class StormRenderer implements IAtmosRenderer {
 	}
 
 	private static BlockPos getPrecipitationHeight(final World world, final BlockPos pos) {
-		if (world.provider.getDimensionId() == -1)
+		if (world.provider.getDimension() == -1)
 			return new BlockPos(pos.getX(), 0, pos.getZ());
 		return world.getPrecipitationHeight(pos);
 	}
@@ -114,7 +114,7 @@ public class StormRenderer implements IAtmosRenderer {
 		final int playerY = MathHelper.floor_double(entity.posY);
 		final int playerZ = MathHelper.floor_double(entity.posZ);
 		final Tessellator tess = Tessellator.getInstance();
-		final WorldRenderer worldrenderer = tess.getWorldRenderer();
+		final VertexBuffer worldrenderer = tess.getBuffer();
 
 		GlStateManager.disableCull();
 		GL11.glNormal3f(0.0F, 1.0F, 0.0F);
@@ -140,8 +140,8 @@ public class StormRenderer implements IAtmosRenderer {
 				final int idx = (gridZ - playerZ + 16) * 32 + gridX - playerX + 16;
 				final double rainX = (double) RAIN_X_COORDS[idx] * 0.5D;
 				final double rainY = (double) RAIN_Y_COORDS[idx] * 0.5D;
-				mutable.set(gridX, 0, gridZ);
-				final Biome biome = world.getBiomeGenForCoords(mutable);
+				mutable.setPos(gridX, 0, gridZ);
+				final Biome biome = world.getBiome(mutable);
 				final boolean hasDust = WeatherUtils.biomeHasDust(biome);
 
 				if (hasDust || BiomeRegistry.hasPrecipitation(biome)) {
@@ -166,9 +166,9 @@ public class StormRenderer implements IAtmosRenderer {
 					if (k2 != l2) {
 						random.setSeed((long) (gridX * gridX * 3121 + gridX * 45238971
 								^ gridZ * gridZ * 418711 + gridZ * 13761));
-						mutable.set(gridX, k2, gridZ);
+						mutable.setPos(gridX, k2, gridZ);
 						final float biomeTemp = biome.getFloatTemperature(mutable);
-						final float heightTemp = world.getWorldChunkManager().getTemperatureAtHeight(biomeTemp,
+						final float heightTemp = world.getBiomeProvider().getTemperatureAtHeight(biomeTemp,
 								precipHeight);
 
 						if (!hasDust && heightTemp >= 0.15F) {
@@ -190,7 +190,7 @@ public class StormRenderer implements IAtmosRenderer {
 							double d7 = (double) ((float) gridZ + 0.5F) - entity.posZ;
 							float f3 = MathHelper.sqrt_double(d6 * d6 + d7 * d7) / (float) range;
 							float f4 = ((1.0F - f3 * f3) * 0.5F + 0.5F) * alphaRatio;
-							mutable.set(gridX, i3, gridZ);
+							mutable.setPos(gridX, i3, gridZ);
 							int j3 = world.getCombinedLight(mutable, 0);
 							int k3 = j3 >> 16 & 65535;
 							int l3 = j3 & 65535;
@@ -226,7 +226,7 @@ public class StormRenderer implements IAtmosRenderer {
 							}
 
 							Color color = new Color(1.0F, 1.0F, 1.0F);
-							if (world.provider.getDimensionId() == -1) {
+							if (world.provider.getDimension() == -1) {
 								final Color c = BiomeRegistry.getDustColor(biome);
 								if (color != null)
 									color.mix(c);
@@ -246,7 +246,7 @@ public class StormRenderer implements IAtmosRenderer {
 							double d12 = (double) ((float) gridZ + 0.5F) - entity.posZ;
 							float f6 = MathHelper.sqrt_double(d11 * d11 + d12 * d12) / (float) range;
 							float f5 = ((1.0F - f6 * f6) * 0.3F + 0.5F) * alphaRatio;
-							mutable.set(gridX, i3, gridZ);
+							mutable.setPos(gridX, i3, gridZ);
 							int i4 = (world.getCombinedLight(mutable, 0) * 3 + 15728880) / 4;
 							int j4 = i4 >> 16 & 65535;
 							int k4 = i4 & 65535;
