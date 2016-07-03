@@ -38,21 +38,21 @@ import org.blockartistry.mod.DynSurround.event.RegistryReloadEvent;
 
 import gnu.trove.map.hash.TObjectIntHashMap;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.particle.EntityDropParticleFX;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class PlayerSoundEffectHandler implements IClientEffectHandler {
@@ -67,8 +67,8 @@ public class PlayerSoundEffectHandler implements IClientEffectHandler {
 		// Need to collect sounds from all the applicable biomes
 		// along with their weights.
 		final TObjectIntHashMap<SoundEffect> sounds = new TObjectIntHashMap<SoundEffect>();
-		final TObjectIntHashMap<BiomeGenBase> weights = BiomeSurveyHandler.getBiomes();
-		for (final BiomeGenBase biome : weights.keySet()) {
+		final TObjectIntHashMap<Biome> weights = BiomeSurveyHandler.getBiomes();
+		for (final Biome biome : weights.keySet()) {
 			final List<SoundEffect> bs = BiomeRegistry.getSounds(biome, conditions);
 			for (final SoundEffect sound : bs)
 				sounds.put(sound, sounds.get(sound) + weights.get(biome));
@@ -98,7 +98,7 @@ public class PlayerSoundEffectHandler implements IClientEffectHandler {
 			return;
 		}
 
-		final BiomeGenBase playerBiome = EnvironState.getPlayerBiome();
+		final Biome playerBiome = EnvironState.getPlayerBiome();
 		final String conditions = EnvironState.getConditions();
 
 		final List<SoundEffect> sounds = new ArrayList<SoundEffect>();
@@ -141,7 +141,7 @@ public class PlayerSoundEffectHandler implements IClientEffectHandler {
 	 */
 	@SubscribeEvent
 	public void playerJoinWorldEvent(final EntityJoinWorldEvent event) {
-		if (event.entity.worldObj.isRemote && EnvironState.isPlayer(event.entity))
+		if (event.getEntity().worldObj.isRemote && EnvironState.isPlayer(event.getEntity()))
 			resetSounds();
 	}
 
@@ -158,8 +158,8 @@ public class PlayerSoundEffectHandler implements IClientEffectHandler {
 
 	@SubscribeEvent
 	public void entityCreateEvent(final EntityConstructing event) {
-		if (event.entity instanceof EntityDropParticleFX) {
-			drops.add((EntityDropParticleFX) event.entity);
+		if (event.getEntity() instanceof EntityDropParticleFX) {
+			drops.add((EntityDropParticleFX) event.getEntity());
 		}
 	}
 
@@ -176,15 +176,16 @@ public class PlayerSoundEffectHandler implements IClientEffectHandler {
 				final int x = MathHelper.floor_double(drop.posX);
 				final int y = MathHelper.floor_double(drop.posY + 0.3D);
 				final int z = MathHelper.floor_double(drop.posZ);
-				pos.set(x, y, z);
+				pos.setPos(x, y, z);
+				IBlockState state = world.getBlockState(pos);
 				Block block = world.getBlockState(pos).getBlock();
-				if (block != Blocks.air && !block.isLeaves(world, pos)) {
+				if (!block.isAir(state, world, pos) && !block.isLeaves(state, world, pos)) {
 					// Find out where it is going to hit
 					BlockPos soundPos = pos.down();
-					while (soundPos.getY() > 0 && (block = world.getBlockState(soundPos).getBlock()) == Blocks.air)
+					while (soundPos.getY() > 0 && world.isAirBlock(soundPos))
 						soundPos = soundPos.down();
 
-					if (soundPos.getY() > 0 && block.getMaterial().isSolid()) {
+					if (soundPos.getY() > 0 && state.getMaterial().isSolid()) {
 						final int distance = y - soundPos.getY();
 						SoundManager.playSoundAt(soundPos.up(), BiomeRegistry.WATER_DRIP, 40 + distance * 2);
 					}
@@ -208,12 +209,12 @@ public class PlayerSoundEffectHandler implements IClientEffectHandler {
 	 */
 	@SubscribeEvent
 	public void soundEvent(final PlaySoundEvent event) {
-		if (event.sound == null)
+		if (event.getSound() == null)
 			return;
 
 		if ((ModOptions.alwaysOverrideSound || !StormProperties.doVanilla()) && replaceRainSound(event.name)) {
-			final ISound sound = event.sound;
-			event.result = new PositionedSoundRecord(StormProperties.getCurrentStormSound(),
+			final ISound sound = event.getSound();
+			event.setResultSound(new PositionedSoundRecord(StormProperties.getCurrentStormSound(),
 					StormProperties.getCurrentVolume(), sound.getPitch(), sound.getXPosF(), sound.getYPosF(),
 					sound.getZPosF());
 			return;

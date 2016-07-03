@@ -45,7 +45,7 @@ public class LegacyCapableBlockMap extends BasicBlockMap {
 			}
 			final String number = key.substring(0, endOfNumber);
 			final int id = Integer.parseInt(number);
-			final Object o = Block.blockRegistry.getObjectById(id);
+			final Object o = Block.REGISTRY.getObjectById(id);
 			if (o != null && o instanceof Block) {
 				final String fullKeyRebuild = MCHelper.nameOf((Block) o)
 						+ (endOfNumber == key.length() ? "" : key.substring(endOfNumber));

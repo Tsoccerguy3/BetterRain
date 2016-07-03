@@ -40,8 +40,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -172,7 +172,8 @@ public class PFSolver implements ISolver {
 	@Override
 	public Association findAssociationForBlock(final int xx, int yy, final int zz) {
 		final World world = EnvironState.getWorld();
-		IBlockState in = world.getBlockState(new BlockPos(xx, yy, zz));
+		BlockPos pos = new BlockPos(xx, yy, zz);
+		IBlockState in = world.getBlockState(pos);
 		final IBlockState above = world.getBlockState(new BlockPos(xx, yy + 1, zz));
 
 		String association = isolator.getBlockMap().getBlockMapSubstrate(above.getBlock(),
@@ -187,7 +188,7 @@ public class PFSolver implements ISolver {
 			// on
 			// > NOT_EMITTER carpets will not cause solving to skip
 
-			if (in.getBlock() == Blocks.air) {
+			if (world.isAirBlock(pos)) {
 
 				final IBlockState below = world.getBlockState(new BlockPos(xx, yy - 1, zz));
 				association = this.isolator.getBlockMap().getBlockMapSubstrate(below.getBlock(),
@@ -307,7 +308,7 @@ public class PFSolver implements ISolver {
 			options.getMap().put(Option.GLIDING_VOLUME, volume > 1 ? 1 : volume);
 			// material water, see EntityLivingBase line 286
 			this.isolator.getAcoustics().playAcoustic(ply, "_SWIM",
-					ply.isInsideOfMaterial(Material.water) ? EventType.SWIM : EventType.WALK, options);
+					ply.isInsideOfMaterial(Material.WATER) ? EventType.SWIM : EventType.WALK, options);
 			return true;
 		}
 

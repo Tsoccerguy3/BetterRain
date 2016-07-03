@@ -27,16 +27,15 @@ package org.blockartistry.mod.DynSurround.client;
 import org.blockartistry.mod.DynSurround.data.DimensionRegistry;
 import org.blockartistry.mod.DynSurround.util.Color;
 
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraft.world.biome.WorldChunkManager;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.border.WorldBorder;
-import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /*
  * The shim is used to hook cloud height and color
@@ -53,7 +52,7 @@ public class WorldProviderShim extends WorldProvider {
 		this.worldObj = world;
 	}
 
-	public IChunkProvider createChunkGenerator() {
+	public IChunkGenerator createChunkGenerator() {
 		return this.provider.createChunkGenerator();
 	}
 
@@ -79,7 +78,7 @@ public class WorldProviderShim extends WorldProvider {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public Vec3 getFogColor(float p_76562_1_, float p_76562_2_) {
+	public Vec3d getFogColor(float p_76562_1_, float p_76562_2_) {
 		return this.provider.getFogColor(p_76562_1_, p_76562_2_);
 	}
 
@@ -215,7 +214,7 @@ public class WorldProviderShim extends WorldProvider {
 		return this.provider.getRespawnDimension(player);
 	}
 
-	public BiomeGenBase getBiomeGenForCoords(BlockPos pos) {
+	public Biome getBiomeGenForCoords(BlockPos pos) {
 		return this.provider.getBiomeGenForCoords(pos);
 	}
 
@@ -232,19 +231,19 @@ public class WorldProviderShim extends WorldProvider {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public Vec3 getSkyColor(net.minecraft.entity.Entity cameraEntity, float partialTicks) {
+	public Vec3d getSkyColor(net.minecraft.entity.Entity cameraEntity, float partialTicks) {
 		return this.provider.getSkyColor(cameraEntity, partialTicks);
 	}
 
 	@SideOnly(Side.CLIENT)
-	public Vec3 drawClouds(float partialTicks) {
-		final Color color = new Color(this.provider.drawClouds(partialTicks));
+	public Vec3d getCloudColor(float partialTicks) {
+		final Color color = new Color(this.provider.getCloudColor(partialTicks));
 		final float stormIntensity = this.worldObj.getRainStrength(1.0F);
 		if (stormIntensity > 0.0F) {
 			// Need to darken the clouds based on intensity
 			color.scale((1.0F - stormIntensity) * 0.5F + 0.5F);
 		}
-		return color.toVec3();
+		return color.toVec3d();
 	}
 
 	@SideOnly(Side.CLIENT)

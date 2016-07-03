@@ -28,14 +28,14 @@ import org.blockartistry.mod.DynSurround.ModOptions;
 import org.blockartistry.mod.DynSurround.client.storm.StormProperties;
 import org.blockartistry.mod.DynSurround.data.BiomeRegistry;
 
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class WeatherUtils {
 
-	public static boolean biomeHasDust(final BiomeGenBase biome) {
+	public static boolean biomeHasDust(final Biome biome) {
 		return ModOptions.allowDesertFog && BiomeRegistry.hasDust(biome) && !StormProperties.doVanilla();
 	}
 }

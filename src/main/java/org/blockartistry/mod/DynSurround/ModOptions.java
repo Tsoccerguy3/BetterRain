@@ -434,7 +434,7 @@ public final class ModOptions {
 	private static void scrubCategory(final ConfigCategory category) {
 		final List<String> killList = new ArrayList<String>();
 		for (final Entry<String, Property> entry : category.entrySet())
-			if (StringUtils.isEmpty(entry.getValue().comment))
+			if (StringUtils.isEmpty(entry.getValue().getComment()))
 				killList.add(entry.getKey());
 
 		for (final String kill : killList)

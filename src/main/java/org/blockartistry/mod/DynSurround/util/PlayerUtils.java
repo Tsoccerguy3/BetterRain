@@ -32,12 +32,12 @@ import org.blockartistry.mod.DynSurround.data.DimensionRegistry;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public final class PlayerUtils {
 
@@ -50,12 +50,12 @@ public final class PlayerUtils {
 	private PlayerUtils() {
 	}
 
-	public static BiomeGenBase getPlayerBiome(final EntityPlayer player, final boolean getTrue) {
+	public static Biome getPlayerBiome(final EntityPlayer player, final boolean getTrue) {
 
 		final int theX = MathHelper.floor_double(player.posX);
 		final int theY = MathHelper.floor_double(player.posY);
 		final int theZ = MathHelper.floor_double(player.posZ);
-		BiomeGenBase biome = player.worldObj.getBiomeGenForCoords(new BlockPos(theX, 0, theZ));
+		Biome biome = player.worldObj.getBiome(new BlockPos(theX, 0, theZ));
 
 		if (!getTrue) {
 			if (isUnderWater(player)) {
@@ -105,7 +105,7 @@ public final class PlayerUtils {
 			for (int z = -RANGE; z <= RANGE; z++) {
 				final int theX = MathHelper.floor_double(x + entity.posX);
 				final int theZ = MathHelper.floor_double(z + entity.posZ);
-				pos.set(theX, 0, theZ);
+				pos.setPos(theX, 0, theZ);
 				final int y = entity.worldObj.getTopSolidOrLiquidBlock(pos).getY();
 				if ((y - targetY) < 3)
 					++seeSky;

@@ -24,7 +24,6 @@
 
 package org.blockartistry.mod.DynSurround.proxy;
 
-import org.blockartistry.mod.DynSurround.VersionCheck;
 import org.blockartistry.mod.DynSurround.client.DamageEffectHandler;
 import org.blockartistry.mod.DynSurround.client.waila.WailaHandler;
 import org.blockartistry.mod.DynSurround.commands.CommandRain;
@@ -43,11 +42,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 public class Proxy {
 
-	public void preInit(final FMLPreInitializationEvent event) {
-		// Register early to give the background process a good amount
-		// of seed to get the mod version data
-		VersionCheck.register();
-	}
+	public void preInit(final FMLPreInitializationEvent event) { }
 
 	public void init(final FMLInitializationEvent event) {
 		Network.initialize();
@@ -62,7 +57,7 @@ public class Proxy {
 	}
 
 	public void serverStarting(final FMLServerStartingEvent event) {
-		final MinecraftServer server = MinecraftServer.getServer();
+		final MinecraftServer server = event.getServer();
 		final ICommandManager command = server.getCommandManager();
 		final ServerCommandManager serverCommand = (ServerCommandManager) command;
 		serverCommand.registerCommand(new CommandRain());

@@ -29,10 +29,10 @@ import org.blockartistry.mod.DynSurround.data.FakeBiome;
 
 import gnu.trove.map.hash.TObjectIntHashMap;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -42,9 +42,9 @@ public final class BiomeSurveyHandler implements IClientEffectHandler {
 	private static final int BIOME_SURVEY_RANGE = 6;
 
 	private static int area;
-	private static final TObjectIntHashMap<BiomeGenBase> weights = new TObjectIntHashMap<BiomeGenBase>();
+	private static final TObjectIntHashMap<Biome> weights = new TObjectIntHashMap<Biome>();
 
-	private static BiomeGenBase lastPlayerBiome = null;
+	private static Biome lastPlayerBiome = null;
 	private static int lastDimension = 0;
 	private static int lastPlayerX = 0;
 	private static int lastPlayerY = 0;
@@ -54,7 +54,7 @@ public final class BiomeSurveyHandler implements IClientEffectHandler {
 		return area;
 	}
 
-	public static TObjectIntHashMap<BiomeGenBase> getBiomes() {
+	public static TObjectIntHashMap<Biome> getBiomes() {
 		return weights;
 	}
 
@@ -76,8 +76,8 @@ public final class BiomeSurveyHandler implements IClientEffectHandler {
 			for (int dX = -range; dX <= range; dX++)
 				for (int dZ = -range; dZ <= range; dZ++) {
 					area++;
-					pos.set(x + dX, 0, z + dZ);
-					final BiomeGenBase biome = player.worldObj.getBiomeGenForCoords(pos);
+					pos.setPos(x + dX, 0, z + dZ);
+					final Biome biome = player.worldObj.getBiome(pos);
 					weights.adjustOrPutValue(biome, 1, 1);
 				}
 		}

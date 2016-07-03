@@ -26,8 +26,8 @@ package org.blockartistry.mod.DynSurround.client.storm;
 
 import org.apache.commons.lang3.StringUtils;
 import org.blockartistry.mod.DynSurround.ModOptions;
-import org.blockartistry.mod.DynSurround.client.WeatherUtils;
 import org.blockartistry.mod.DynSurround.client.EnvironStateHandler.EnvironState;
+import org.blockartistry.mod.DynSurround.client.WeatherUtils;
 import org.blockartistry.mod.DynSurround.client.fx.particle.ParticleFactory;
 import org.blockartistry.mod.DynSurround.data.BiomeRegistry;
 import org.blockartistry.mod.DynSurround.data.DimensionRegistry;
@@ -38,18 +38,17 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.NoiseGeneratorSimplex;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class StormSplashRenderer {
@@ -83,7 +82,7 @@ public class StormSplashRenderer {
 		return MathHelper
 				.clamp_float(
 						(float) (StormProperties.getCurrentVolume()
-								+ GENERATOR.func_151605_a(DiurnalUtils.getClockTime(world) / 100, 1) / 5.0F),
+								+ GENERATOR.getValue(DiurnalUtils.getClockTime(world) / 100, 1) / 5.0F),
 						0.0F, 1.0F);
 	}
 
@@ -175,9 +174,9 @@ public class StormSplashRenderer {
 		for (int j1 = 0; j1 < particleCount; ++j1) {
 			final int locX = playerX + RANDOM.nextInt(RANGE) - RANDOM.nextInt(RANGE);
 			final int locZ = playerZ + RANDOM.nextInt(RANGE) - RANDOM.nextInt(RANGE);
-			posXZ.set(locX, 0, locZ);
+			posXZ.setPos(locX, 0, locZ);
 			final BlockPos precipHeight = getPrecipitationHeight(worldclient, RANGE / 2, posXZ);
-			final BiomeGenBase biome = worldclient.getBiomeGenForCoords(posXZ);
+			final Biome biome = worldclient.getBiome(posXZ);
 			final boolean hasDust = WeatherUtils.biomeHasDust(biome);
 
 			if (precipHeight.getY() <= playerY + RANGE && precipHeight.getY() >= playerY - RANGE && (hasDust

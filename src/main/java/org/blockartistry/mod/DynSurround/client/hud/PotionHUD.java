@@ -53,7 +53,7 @@ public class PotionHUD extends Gui implements IGuiOverlay {
 
 	public void doRender(final RenderGameOverlayEvent event) {
 
-		if (event.isCancelable() || event.type != ElementType.EXPERIENCE) {
+		if (event.isCancelable() || event.getType() != ElementType.EXPERIENCE) {
 			return;
 		}
 
@@ -88,7 +88,7 @@ public class PotionHUD extends Gui implements IGuiOverlay {
 
 			for (Iterator<PotionEffect> iterator = collection.iterator(); iterator.hasNext(); guiTop += k) {
 				final PotionEffect potioneffect = iterator.next();
-				final Potion potion = Potion.potionTypes[potioneffect.getPotionID()];
+				final Potion potion = potioneffect.getPotion();
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, ModOptions.potionHudTransparency);
 				mc.getTextureManager().bindTexture(TEXTURE);
 				this.drawTexturedModalRect(guiLeft, guiTop, 0, 166, 140, 32);
@@ -117,7 +117,7 @@ public class PotionHUD extends Gui implements IGuiOverlay {
 				}
 
 				font.drawStringWithShadow(s1, guiLeft + 10 + 18, guiTop + 6, TEXT_POTION_NAME);
-				String s = Potion.getDurationString(potioneffect);
+				String s = Potion.getPotionDurationString(potioneffect, 1.0f);
 				font.drawStringWithShadow(s, guiLeft + 10 + 18, guiTop + 6 + 10,
 						potioneffect.getDuration() <= 200 ? TEXT_DURATION_LOW : TEXT_DURATION);
 			}

@@ -48,7 +48,7 @@ public class DebugHUD extends Gui implements IGuiOverlay {
 
 	public void doRender(final RenderGameOverlayEvent event) {
 
-		if (event.isCancelable() || event.type != ElementType.EXPERIENCE) {
+		if (event.isCancelable() || event.getType() != ElementType.EXPERIENCE) {
 			return;
 		}
 		

@@ -30,10 +30,10 @@ import org.blockartistry.mod.DynSurround.client.EnvironStateHandler.EnvironState
 import org.blockartistry.mod.DynSurround.data.DimensionEffectData;
 
 import net.minecraft.client.renderer.EntityRenderer;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public enum StormProperties {
@@ -54,8 +54,8 @@ public enum StormProperties {
 
 	private StormProperties() {
 		this.level = -10.0F;
-		this.rainTexture = EntityRenderer.locationRainPng;
-		this.snowTexture = EntityRenderer.locationSnowPng;
+		this.rainTexture = EntityRenderer.RAIN_TEXTURES;
+		this.snowTexture = EntityRenderer.SNOW_TEXTURES;
 		this.dustTexture = new ResourceLocation(Module.MOD_ID, "textures/environment/dust_calm.png");
 		this.rainSound = String.format("%s:%s", Module.MOD_ID, "rain");
 		this.dustSound = String.format("%s:%s", Module.MOD_ID, "dust");

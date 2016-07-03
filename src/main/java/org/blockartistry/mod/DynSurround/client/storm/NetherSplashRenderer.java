@@ -28,10 +28,9 @@ import org.blockartistry.mod.DynSurround.client.EnvironStateHandler.EnvironState
 import org.blockartistry.mod.DynSurround.client.fx.particle.ParticleFactory;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 public class NetherSplashRenderer extends StormSplashRenderer {

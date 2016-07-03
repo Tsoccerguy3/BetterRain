@@ -71,7 +71,7 @@ public class ProxyClient extends Proxy {
 		if (ModOptions.enableDebugLogging) {
 			final SoundHandler handler = Minecraft.getMinecraft().getSoundHandler();
 			final List<String> sounds = new ArrayList<String>();
-			for (final Object resource : handler.sndRegistry.getKeys())
+			for (final Object resource : handler.soundRegistry.getKeys())
 				sounds.add(resource.toString());
 			Collections.sort(sounds);
 

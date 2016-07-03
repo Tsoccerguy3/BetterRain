@@ -69,7 +69,7 @@ public final class ServerEffectHandler {
 		}
 
 		final World world = event.world;
-		final int dimensionId = world.provider.getDimensionId();
+		final int dimensionId = world.provider.getDimension();
 		final float sendIntensity = DimensionRegistry.hasWeather(world) ? DimensionEffectData.get(world).getRainIntensity()
 				: RESET;
 
@@ -110,12 +110,11 @@ public final class ServerEffectHandler {
 		if (DiurnalUtils.isDaytime(world)) {
 			data.clear();
 		} else {
-			final int tickCount = tickCounters.get(world.provider.getDimensionId()) + 1;
-			tickCounters.put(world.provider.getDimensionId(), tickCount);
+			final int tickCount = tickCounters.get(world.provider.getDimension()) + 1;
+			tickCounters.put(world.provider.getDimension(), tickCount);
 			if (tickCount % CHECK_INTERVAL == 0) {
 				if (okToSpawnAurora(world)) {
-					final List<EntityPlayerMP> players = MinecraftServer.getServer()
-							.getConfigurationManager().playerEntityList;
+					final List<EntityPlayerMP> players = event.world.getMinecraftServer().getPlayerList().getPlayerList();
 
 					for (final EntityPlayerMP player : players) {
 						if (!BiomeRegistry.hasAurora(PlayerUtils.getPlayerBiome(player, false)))
@@ -135,7 +134,7 @@ public final class ServerEffectHandler {
 				}
 
 				for (final AuroraData a : data) {
-					Network.sendAurora(a, world.provider.getDimensionId());
+					Network.sendAurora(a, world.provider.getDimension());
 				}
 			}
 		}

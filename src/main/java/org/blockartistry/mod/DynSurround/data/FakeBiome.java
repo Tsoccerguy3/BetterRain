@@ -23,14 +23,14 @@
 
 package org.blockartistry.mod.DynSurround.data;
 
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 
 /*
  * Fake biome to facilitate configuration of the underground
  * environment.  It's not registered with Minecraft or
  * Forge.
  */
-public class FakeBiome extends BiomeGenBase {
+public class FakeBiome extends Biome {
 
 	public FakeBiome(final int biomeId, final String biomeName) {
 		super(biomeId, false);

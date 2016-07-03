@@ -29,7 +29,7 @@ import java.util.List;
 
 import org.blockartistry.mod.DynSurround.util.XorShiftRandom;
 
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 /**
  * Preset geometry of an Aurora.  A preset is selected by the server

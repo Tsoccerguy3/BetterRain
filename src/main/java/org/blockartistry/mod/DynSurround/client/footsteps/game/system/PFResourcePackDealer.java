@@ -33,16 +33,17 @@ import java.util.Set;
 
 import org.blockartistry.mod.DynSurround.ModLog;
 import org.blockartistry.mod.DynSurround.Module;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.client.resources.ResourcePackRepository;
 import net.minecraft.client.resources.data.IMetadataSection;
-import net.minecraft.client.resources.data.IMetadataSerializer;
+import net.minecraft.client.resources.data.MetadataSerializer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class PFResourcePackDealer {
@@ -92,7 +93,7 @@ public class PFResourcePackDealer {
 
 		@SuppressWarnings("unchecked")
 		@Override
-		public IMetadataSection getPackMetadata(final IMetadataSerializer loc, final String data) throws IOException {
+		public IMetadataSection getPackMetadata(final MetadataSerializer loc, final String data) throws IOException {
 			return null;
 		}
 

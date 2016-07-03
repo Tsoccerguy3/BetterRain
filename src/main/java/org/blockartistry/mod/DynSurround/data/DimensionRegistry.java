@@ -95,7 +95,7 @@ public final class DimensionRegistry {
 
 	public static void loading(final World world) {
 		getData(world).initialize(world.provider);
-		if (world.provider.getDimensionId() == 0) {
+		if (world.provider.getDimension() == 0) {
 			isFlatWorld = world.getWorldInfo().getTerrainType() == WorldType.FLAT;
 		}
 	}
@@ -136,13 +136,13 @@ public final class DimensionRegistry {
 	}
 
 	protected DimensionRegistry(final World world) {
-		this.dimensionId = world.provider.getDimensionId();
+		this.dimensionId = world.provider.getDimension();
 		initialize(world.provider);
 	}
 
 	protected DimensionRegistry(final World world, final DimensionConfig.Entry entry) {
-		this.dimensionId = world.provider.getDimensionId();
-		this.name = world.provider.getDimensionName();
+		this.dimensionId = world.provider.getDimension();
+		this.name = world.provider.getDimensionType().getName();
 		this.seaLevel = entry.seaLevel;
 		this.skyHeight = entry.skyHeight;
 		this.hasHaze = entry.hasHaze;
@@ -154,7 +154,7 @@ public final class DimensionRegistry {
 
 	protected DimensionRegistry initialize(final WorldProvider provider) {
 		if (!this.initialized) {
-			this.name = provider.getDimensionName();
+			this.name = provider.getDimensionType().getName();
 			if (this.seaLevel == null)
 				this.seaLevel = provider.getAverageGroundLevel();
 			if (this.skyHeight == null)
@@ -231,12 +231,12 @@ public final class DimensionRegistry {
 	}
 
 	public static DimensionRegistry getData(final World world) {
-		DimensionRegistry data = dimensionData.get(world.provider.getDimensionId());
+		DimensionRegistry data = dimensionData.get(world.provider.getDimension());
 		if (data == null) {
 			DimensionConfig.Entry entry = null;
 			for (final DimensionConfig.Entry e : cache)
-				if ((e.dimensionId != null && e.dimensionId == world.provider.getDimensionId())
-						|| (e.name != null && e.name.equals(world.provider.getDimensionName()))) {
+				if ((e.dimensionId != null && e.dimensionId == world.provider.getDimension())
+						|| (e.name != null && e.name.equals(world.provider.getDimensionType()))) {
 					entry = e;
 					break;
 				}
@@ -245,7 +245,7 @@ public final class DimensionRegistry {
 			} else {
 				data = new DimensionRegistry(world, entry);
 			}
-			dimensionData.put(world.provider.getDimensionId(), data);
+			dimensionData.put(world.provider.getDimension(), data);
 		}
 		return data;
 	}
@@ -255,7 +255,7 @@ public final class DimensionRegistry {
 	}
 
 	public static int getSeaLevel(final World world) {
-		if (world.provider.getDimensionId() == 0 && isFlatWorld)
+		if (world.provider.getDimension() == 0 && isFlatWorld)
 			return 0;
 		return getData(world).getSeaLevel();
 	}
@@ -296,7 +296,7 @@ public final class DimensionRegistry {
 			builder.append(CONDITION_TOKEN_DAY);
 		else
 			builder.append(CONDITION_TOKEN_NIGHT);
-		builder.append(CONDITION_SEPARATOR).append(world.provider.getDimensionName());
+		builder.append(CONDITION_SEPARATOR).append(world.provider.getDimensionType());
 		if (world.getRainStrength(1.0F) > 0.0F)
 			builder.append(CONDITION_SEPARATOR).append(CONDITION_TOKEN_RAINING);
 		builder.append(CONDITION_SEPARATOR).append(getSeason(world));

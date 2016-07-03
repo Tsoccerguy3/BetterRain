@@ -24,7 +24,7 @@
 
 package org.blockartistry.mod.DynSurround.util;
 
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * Holds an RGB triple. See: http://www.rapidtables.com/web/color/RGB_Color.htm
@@ -48,7 +48,7 @@ public class Color {
 		}
 
 		@Override
-		public Color adjust(final Vec3 adjust, final Color target) {
+		public Color adjust(final Vec3d adjust, final Color target) {
 			throw new UnsupportedOperationException();
 		}
 	}
@@ -84,7 +84,7 @@ public class Color {
 		this(red / 255.0F, green / 255.0F, blue / 255.0F);
 	}
 
-	public Color(final Vec3 vec) {
+	public Color(final Vec3d vec) {
 		this((float) vec.xCoord, (float) vec.yCoord, (float) vec.zCoord);
 	}
 
@@ -94,19 +94,19 @@ public class Color {
 		this.blue = blue;
 	}
 
-	public Vec3 toVec3() {
-		return new Vec3(this.red, this.green, this.blue);
+	public Vec3d toVec3d() {
+		return new Vec3d(this.red, this.green, this.blue);
 	}
 
 	/*
 	 * Calculates the RGB adjustments to make to the color to arrive at the
 	 * target color after the specified number of iterations.
 	 */
-	public Vec3 transitionTo(final Color target, final int iterations) {
+	public Vec3d transitionTo(final Color target, final int iterations) {
 		final double deltaRed = (target.red - this.red) / iterations;
 		final double deltaGreen = (target.green - this.green) / iterations;
 		final double deltaBlue = (target.blue - this.blue) / iterations;
-		return new Vec3(deltaRed, deltaGreen, deltaBlue);
+		return new Vec3d(deltaRed, deltaGreen, deltaBlue);
 	}
 
 	public Color scale(final float scaleFactor) {
@@ -163,7 +163,7 @@ public class Color {
 		return this;
 	}
 
-	public Color adjust(final Vec3 adjust, final Color target) {
+	public Color adjust(final Vec3d adjust, final Color target) {
 		this.red += adjust.xCoord;
 		if ((adjust.xCoord < 0.0F && this.red < target.red) || (adjust.xCoord > 0.0F && this.red > target.red)) {
 			this.red = target.red;

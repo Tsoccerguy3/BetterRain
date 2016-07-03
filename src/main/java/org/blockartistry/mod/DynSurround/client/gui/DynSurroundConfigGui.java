@@ -38,16 +38,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.GuiConfigEntries.NumberSliderEntry;
 import net.minecraftforge.fml.client.config.IConfigElement;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class DynSurroundConfigGui extends GuiConfig {
@@ -164,7 +164,7 @@ public class DynSurroundConfigGui extends GuiConfig {
 
 		final SoundHandler handler = Minecraft.getMinecraft().getSoundHandler();
 		final List<String> sounds = new ArrayList<String>();
-		for (final Object resource : handler.sndRegistry.getKeys())
+		for (final Object resource : handler.soundRegistry.getKeys())
 			sounds.add(resource.toString());
 		Collections.sort(sounds);
 
@@ -184,7 +184,7 @@ public class DynSurroundConfigGui extends GuiConfig {
 		
 		final SoundHandler handler = Minecraft.getMinecraft().getSoundHandler();
 		final List<String> sounds = new ArrayList<String>();
-		for (final Object resource : handler.sndRegistry.getKeys())
+		for (final Object resource : handler.soundRegistry.getKeys())
 			sounds.add(resource.toString());
 		Collections.sort(sounds);
 

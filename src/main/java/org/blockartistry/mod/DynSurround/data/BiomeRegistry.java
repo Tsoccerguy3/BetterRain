@@ -45,7 +45,7 @@ import org.blockartistry.mod.DynSurround.util.Color;
 import org.blockartistry.mod.DynSurround.util.MyUtils;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.MinecraftForge;
 
 public final class BiomeRegistry {
@@ -53,24 +53,24 @@ public final class BiomeRegistry {
 	private static final TIntObjectHashMap<Entry> registry = new TIntObjectHashMap<Entry>();
 	private static final Map<String, String> biomeAliases = new HashMap<String, String>();
 
-	public static final BiomeGenBase UNDERGROUND = new FakeBiome(-1, "Underground");
-	public static final BiomeGenBase PLAYER = new FakeBiome(-2, "Player");
-	public static final BiomeGenBase UNDERWATER = new FakeBiome(-3, "Underwater");
-	public static final BiomeGenBase UNDEROCEAN = new FakeBiome(-4, "UnderOCN");
-	public static final BiomeGenBase UNDERDEEPOCEAN = new FakeBiome(-5, "UnderDOCN");
-	public static final BiomeGenBase UNDERRIVER = new FakeBiome(-6, "UnderRVR");
-	public static final BiomeGenBase OUTERSPACE = new FakeBiome(-7, "OuterSpace");
-	public static final BiomeGenBase CLOUDS = new FakeBiome(-8, "Clouds");
+	public static final Biome UNDERGROUND = new FakeBiome(-1, "Underground");
+	public static final Biome PLAYER = new FakeBiome(-2, "Player");
+	public static final Biome UNDERWATER = new FakeBiome(-3, "Underwater");
+	public static final Biome UNDEROCEAN = new FakeBiome(-4, "UnderOCN");
+	public static final Biome UNDERDEEPOCEAN = new FakeBiome(-5, "UnderDOCN");
+	public static final Biome UNDERRIVER = new FakeBiome(-6, "UnderRVR");
+	public static final Biome OUTERSPACE = new FakeBiome(-7, "OuterSpace");
+	public static final Biome CLOUDS = new FakeBiome(-8, "Clouds");
 
 	public static final SoundEffect WATER_DRIP = new SoundEffect(Module.MOD_ID + ":waterdrops");
 
 	// This is for cases when the biome coming in doesn't make sense
-	// and should default to something to avoid crap.
-	private static final BiomeGenBase WTF = new FakeBiome(-256, "(FooBar)");
+	// and should default to something to avoid crap. - Wat
+	private static final Biome WTF = new FakeBiome(-256, "(FooBar)");
 
 	private static class Entry {
 
-		public final BiomeGenBase biome;
+		public final Biome biome;
 		public boolean hasPrecipitation;
 		public boolean hasDust;
 		public boolean hasAurora;
@@ -85,7 +85,7 @@ public final class BiomeRegistry {
 		public int spotSoundChance;
 		public List<SoundEffect> spotSounds;
 
-		public Entry(final BiomeGenBase biome) {
+		public Entry(final Biome biome) {
 			this.biome = biome;
 			this.hasPrecipitation = biome.canSpawnLightningBolt() || biome.getEnableSnow();
 			this.sounds = new ArrayList<SoundEffect>();
@@ -111,7 +111,7 @@ public final class BiomeRegistry {
 		@Override
 		public String toString() {
 			final StringBuilder builder = new StringBuilder();
-			builder.append(String.format("Biome %d [%s]:", this.biome.biomeID, resolveName(this.biome)));
+			builder.append(String.format("Biome %d [%s]:", Biome.getIdForBiome(this.biome), resolveName(this.biome)));
 			if (this.hasPrecipitation)
 				builder.append(" PRECIPITATION");
 			if (this.hasDust)
@@ -147,12 +147,12 @@ public final class BiomeRegistry {
 		}
 	}
 
-	public static String resolveName(final BiomeGenBase biome) {
+	public static String resolveName(final Biome biome) {
 		if (biome == null)
 			return "(Bad Biome)";
-		if (StringUtils.isEmpty(biome.biomeName))
-			return new StringBuilder().append('#').append(biome.biomeID).toString();
-		return biome.biomeName;
+		if (StringUtils.isEmpty(biome.getBiomeName()))
+			return new StringBuilder().append('#').append(Biome.getIdForBiome(biome)).toString();
+		return biome.getBiomeName();
 	}
 
 	public static void initialize() {
@@ -167,7 +167,7 @@ public final class BiomeRegistry {
 
 		registry.clear();
 
-		final BiomeGenBase[] biomeArray = BiomeGenBase.getBiomeGenArray();
+		final Biome[] biomeArray = Biome.getBiomeGenArray();
 		for (int i = 0; i < biomeArray.length; i++)
 			if (biomeArray[i] != null) {
 				registry.put(biomeArray[i].biomeID, new Entry(biomeArray[i]));
@@ -198,7 +198,7 @@ public final class BiomeRegistry {
 		MinecraftForge.EVENT_BUS.post(new RegistryReloadEvent.Biome());
 	}
 
-	private static Entry get(final BiomeGenBase biome) {
+	private static Entry get(final Biome biome) {
 		Entry entry = registry.get(biome == null ? WTF.biomeID : biome.biomeID);
 		if (entry == null) {
 			ModLog.warn("Biome [%s] was not detected during initial scan! Reloading config...", resolveName(biome));
@@ -213,43 +213,43 @@ public final class BiomeRegistry {
 		return entry;
 	}
 
-	public static boolean hasDust(final BiomeGenBase biome) {
+	public static boolean hasDust(final Biome biome) {
 		return get(biome).hasDust;
 	}
 
-	public static boolean hasPrecipitation(final BiomeGenBase biome) {
+	public static boolean hasPrecipitation(final Biome biome) {
 		return get(biome).hasPrecipitation;
 	}
 
-	public static boolean hasAurora(final BiomeGenBase biome) {
+	public static boolean hasAurora(final Biome biome) {
 		return get(biome).hasAurora;
 	}
 
-	public static boolean hasFog(final BiomeGenBase biome) {
+	public static boolean hasFog(final Biome biome) {
 		return get(biome).hasFog;
 	}
 
-	public static Color getDustColor(final BiomeGenBase biome) {
+	public static Color getDustColor(final Biome biome) {
 		return get(biome).dustColor;
 	}
 
-	public static Color getFogColor(final BiomeGenBase biome) {
+	public static Color getFogColor(final Biome biome) {
 		return get(biome).fogColor;
 	}
 
-	public static float getFogDensity(final BiomeGenBase biome) {
+	public static float getFogDensity(final Biome biome) {
 		return get(biome).fogDensity;
 	}
 
-	public static SoundEffect getSound(final BiomeGenBase biome, final String conditions) {
+	public static SoundEffect getSound(final Biome biome, final String conditions) {
 		return get(biome).findSoundMatch(conditions);
 	}
 
-	public static List<SoundEffect> getSounds(final BiomeGenBase biome, final String conditions) {
+	public static List<SoundEffect> getSounds(final Biome biome, final String conditions) {
 		return get(biome).findSoundMatches(conditions);
 	}
 
-	public static SoundEffect getSpotSound(final BiomeGenBase biome, final String conditions, final Random random) {
+	public static SoundEffect getSpotSound(final Biome biome, final String conditions, final Random random) {
 		final Entry e = get(biome);
 		if (e == null || e.spotSounds.isEmpty() || random.nextInt(e.spotSoundChance) != 0)
 			return null;

@@ -37,8 +37,9 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.StatCollector;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 public final class CommandRain extends CommandBase {
@@ -78,7 +79,7 @@ public final class CommandRain extends CommandBase {
 	}
 
 	@Override
-	public void processCommand(final ICommandSender sender, final String[] parms) {
+	public void execute(MinecraftServer server, final ICommandSender sender, final String[] parms) {
 
 		try {
 			final EntityPlayerMP player = getCommandSenderAsPlayer(sender);
@@ -88,36 +89,36 @@ public final class CommandRain extends CommandBase {
 			if (parms.length == 1) {
 				if ("status".compareToIgnoreCase(parms[0]) == 0) {
 					// Dump out some diagnostics for the currentAurora dimension
-					player.addChatMessage(new ChatComponentText(statusOutput(world, data)));
+					player.addChatMessage(new TextComponentTranslation(statusOutput(world, data)));
 				} else if ("reset".compareToIgnoreCase(parms[0]) == 0) {
 					world.provider.resetRainAndThunder();
-					player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("msg.RainReset")));
+					player.addChatMessage(new TextComponentTranslation("msg.RainReset"));
 				} else if("reload".compareToIgnoreCase(parms[0]) == 0) {
 					BiomeRegistry.initialize();
 					BlockRegistry.initialize();
-					player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("msg.BiomeReload")));
+					player.addChatMessage(new TextComponentTranslation("msg.BiomeReload"));
 				} else {
 					final double d = parseDouble(parms[0], 0.0D, 100.0D) / 100.0D;
 					data.setRainIntensity((float) d);
-					player.addChatMessage(new ChatComponentText(StatCollector.translateToLocalFormatted(
-							"msg.RainIntensitySet", FORMATTER.format(data.getRainIntensity() * 100))));
+					player.addChatMessage(new TextComponentTranslation(
+							"msg.RainIntensitySet", FORMATTER.format(data.getRainIntensity() * 100)));
 				}
 			} else if (parms.length == 2) {
 				if ("setmin".compareToIgnoreCase(parms[0]) == 0) {
 					final double d = parseDouble(parms[1], 0.0D, 100.0D) / 100.0D;
 					data.setMinRainIntensity((float) d);
-					player.addChatMessage(new ChatComponentText(StatCollector.translateToLocalFormatted(
-							"msg.MinRainIntensitySet", FORMATTER.format(data.getMinRainIntensity() * 100))));
+					player.addChatMessage(new TextComponentTranslation(
+							"msg.MinRainIntensitySet", FORMATTER.format(data.getMinRainIntensity() * 100)));
 				} else if ("setmax".compareToIgnoreCase(parms[0]) == 0) {
 					final double d = parseDouble(parms[1], 0.0D, 100.0D) / 100.0D;
 					data.setMaxRainIntensity((float) d);
-					player.addChatMessage(new ChatComponentText(StatCollector.translateToLocalFormatted(
-							"msg.MaxRainIntensitySet", FORMATTER.format(data.getMaxRainIntensity() * 100))));
+					player.addChatMessage(new TextComponentTranslation(
+							"msg.MaxRainIntensitySet", FORMATTER.format(data.getMaxRainIntensity() * 100)));
 				} else {
 					throw new CommandException(getCommandUsage(sender));
 				}
 			} else {
-				player.addChatMessage(new ChatComponentText(getCommandUsage(sender)));
+				player.addChatMessage(new TextComponentString(getCommandUsage(sender)));
 			}
 		} catch (final Exception ex) {
 			ex.printStackTrace();

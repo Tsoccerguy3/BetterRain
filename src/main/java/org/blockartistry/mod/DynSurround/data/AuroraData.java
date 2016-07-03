@@ -54,7 +54,7 @@ public final class AuroraData implements INBTSerialization {
 	}
 
 	public AuroraData(@Nonnull final EntityPlayer player, final int zOffset, final int colorSet, final int preset) {
-		this(player.worldObj.provider.getDimensionId(), (int) player.posX, (int) player.posZ + zOffset,
+		this(player.worldObj.provider.getDimension(), (int) player.posX, (int) player.posZ + zOffset,
 				player.worldObj.getWorldTime(), colorSet, preset);
 	}
 

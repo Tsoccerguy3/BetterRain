@@ -26,7 +26,7 @@ package org.blockartistry.mod.DynSurround.util;
 import net.minecraft.world.World;
 
 public final class DiurnalUtils {
-
+// TODO JUST NO, total rewrite needed here.
 	private DiurnalUtils() {
 	}
 

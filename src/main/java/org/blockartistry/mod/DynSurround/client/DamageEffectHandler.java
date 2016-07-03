@@ -34,16 +34,17 @@ import org.blockartistry.mod.DynSurround.client.fx.particle.EntityHealPopOffFX;
 import org.blockartistry.mod.DynSurround.network.Network;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EffectRenderer;
-import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.MobEffects;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
@@ -96,51 +97,51 @@ public final class DamageEffectHandler {
 	// From the Minecraft code for damage
 	private static boolean isCritical(final EntityPlayer player, final Entity target) {
 		return player.fallDistance > 0.0F && !player.onGround && !player.isOnLadder() && !player.isInWater()
-				&& !player.isPotionActive(Potion.blindness) && player.ridingEntity == null
+				&& !player.isPotionActive(MobEffects.BLINDNESS) && player.getRidingEntity() == null
 				&& target instanceof EntityLivingBase;
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public void onLivingHurt(final LivingHurtEvent event) {
-		if (event == null || event.entity == null || event.entity.worldObj == null || event.entity.worldObj.isRemote)
+		if (event == null || event.getEntity() == null || event.getEntity().worldObj == null || event.getEntity().worldObj.isRemote)
 			return;
 
 		// Living heal should handle heals - I think..
-		if (event.ammount <= 0 || event.entityLiving == null)
+		if (event.getAmount() <= 0 || event.getEntityLiving() == null)
 			return;
 
 		// A bit hokey - may work.
 		boolean isCrit = false;
-		if (event.source instanceof EntityDamageSourceIndirect) {
-			final EntityDamageSourceIndirect dmgSource = (EntityDamageSourceIndirect) event.source;
+		if (event.getSource() instanceof EntityDamageSourceIndirect) {
+			final EntityDamageSourceIndirect dmgSource = (EntityDamageSourceIndirect) event.getSource();
 			if (dmgSource.getSourceOfDamage() instanceof EntityArrow) {
 				final EntityArrow arrow = (EntityArrow) dmgSource.getSourceOfDamage();
 				isCrit = arrow.getIsCritical();
 			}
-		} else if (event.source instanceof EntityDamageSource) {
-			final EntityDamageSource dmgSource = (EntityDamageSource) event.source;
+		} else if (event.getSource() instanceof EntityDamageSource) {
+			final EntityDamageSource dmgSource = (EntityDamageSource) event.getSource();
 			if (dmgSource.getSourceOfDamage() instanceof EntityPlayer) {
 				final EntityPlayer player = (EntityPlayer) dmgSource.getSourceOfDamage();
-				isCrit = isCritical(player, event.entityLiving);
+				isCrit = isCritical(player, event.getEntityLiving());
 			}
 		}
 
-		final HealthData data = new HealthData(event.entityLiving, isCrit, (int) event.ammount);
-		Network.sendHealthUpdate(data, event.entity.worldObj.provider.getDimensionId());
+		final HealthData data = new HealthData(event.getEntityLiving(), isCrit, (int) event.getAmount());
+		Network.sendHealthUpdate(data, event.getEntity().worldObj.provider.getDimension());
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public void onLivingHeal(final LivingHealEvent event) {
-		if (event == null || event.entity == null || event.entity.worldObj == null || event.entity.worldObj.isRemote)
+		if (event == null || event.getEntity() == null || event.getEntity().worldObj == null || event.getEntity().worldObj.isRemote)
 			return;
 
 		// Just in case
-		if (event.amount <= 0 || event.entityLiving == null
-				|| event.entityLiving.getHealth() == event.entityLiving.getMaxHealth())
+		if (event.getAmount() <= 0 || event.getEntityLiving() == null
+				|| event.getEntityLiving().getHealth() == event.getEntityLiving().getMaxHealth())
 			return;
 
-		final HealthData data = new HealthData(event.entityLiving, false, -(int) event.amount);
-		Network.sendHealthUpdate(data, event.entity.worldObj.provider.getDimensionId());
+		final HealthData data = new HealthData(event.getEntityLiving(), false, -(int) event.getAmount());
+		Network.sendHealthUpdate(data, event.getEntity().worldObj.provider.getDimension());
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -158,8 +159,8 @@ public final class DamageEffectHandler {
 			return;
 
 		final World world = EnvironState.getWorld();
-		final EffectRenderer renderer = Minecraft.getMinecraft().effectRenderer;
-		EntityFX fx;
+		final ParticleManager renderer = Minecraft.getMinecraft().effectRenderer;
+		Particle fx;
 
 		if (data.isCritical) {
 			fx = new EntityCriticalPopOffFX(world, data.posX, data.posY, data.posZ);

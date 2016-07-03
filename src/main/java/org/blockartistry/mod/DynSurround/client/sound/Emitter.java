@@ -31,9 +31,9 @@ import org.blockartistry.mod.DynSurround.util.XorShiftRandom;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
+import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import paulscode.sound.SoundSystemConfig;
-import net.minecraftforge.fml.relauncher.Side;
 
 /*
  * Emitters are used to produce sounds that are continuous

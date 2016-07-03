@@ -213,7 +213,7 @@ public class Footsteps implements IResourceManagerReloadListener, IClientEffectH
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onWorldUnload(final WorldEvent.Unload event) {
-		if (event.world.provider.getDimensionId() == 0)
+		if (event.getWorld().provider.getDimension() == 0)
 			this.isolator = null;
 	}
 

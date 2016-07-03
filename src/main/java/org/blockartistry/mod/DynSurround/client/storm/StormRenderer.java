@@ -44,7 +44,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -141,7 +141,7 @@ public class StormRenderer implements IAtmosRenderer {
 				final double rainX = (double) RAIN_X_COORDS[idx] * 0.5D;
 				final double rainY = (double) RAIN_Y_COORDS[idx] * 0.5D;
 				mutable.set(gridX, 0, gridZ);
-				final BiomeGenBase biome = world.getBiomeGenForCoords(mutable);
+				final Biome biome = world.getBiomeGenForCoords(mutable);
 				final boolean hasDust = WeatherUtils.biomeHasDust(biome);
 
 				if (hasDust || BiomeRegistry.hasPrecipitation(biome)) {

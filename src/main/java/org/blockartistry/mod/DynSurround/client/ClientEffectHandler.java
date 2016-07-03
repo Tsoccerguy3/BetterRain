@@ -39,13 +39,13 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ClientEffectHandler {
@@ -115,7 +115,7 @@ public class ClientEffectHandler {
 		if (provider.getHasNoSky())
 			return false;
 
-		final String name = provider.getDimensionName();
+		final String name = provider.getDimensionType().getName();
 		for (final String pattern : dimensionNamePatterns)
 			if (Pattern.matches(pattern, name))
 				return false;
@@ -124,17 +124,17 @@ public class ClientEffectHandler {
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onWorldLoad(final WorldEvent.Load e) {
-		if (!e.world.isRemote)
+		if (!e.getWorld().isRemote)
 			return;
 
 		// Tickle the Dimension Registry so it has the
 		// latest info.
-		DimensionRegistry.loading(e.world);
+		DimensionRegistry.loading(e.getWorld());
 
 		// Shim the provider so we can tap into the
 		// sky and cloud stuff.
-		if (ModOptions.enableFancyCloudHandling && okToHook(e.world.provider)) {
-			e.world.provider = new WorldProviderShim(e.world, e.world.provider);
+		if (ModOptions.enableFancyCloudHandling && okToHook(e.getWorld().provider)) {
+			e.getWorld().provider = new WorldProviderShim(e.getWorld(), e.getWorld().provider);
 		}
 	}
 }

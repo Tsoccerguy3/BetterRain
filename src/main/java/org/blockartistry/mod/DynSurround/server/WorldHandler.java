@@ -31,7 +31,7 @@ import org.blockartistry.mod.DynSurround.data.DimensionEffectData;
 import org.blockartistry.mod.DynSurround.data.DimensionEffectDataFile;
 import org.blockartistry.mod.DynSurround.util.XorShiftRandom;
 
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
 
@@ -53,7 +53,7 @@ public class WorldHandler {
 		if (world.isRemote)
 			return;
 
-		final int dimensionId = world.provider.getDimensionId();
+		final int dimensionId = world.provider.getDimension();
 		final DimensionEffectData data = DimensionEffectDataFile.get(world);
 		final WorldInfo info = world.getWorldInfo();
 

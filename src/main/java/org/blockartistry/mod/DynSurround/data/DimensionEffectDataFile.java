@@ -73,7 +73,7 @@ public final class DimensionEffectDataFile extends WorldSavedData {
 	}
 
 	public static DimensionEffectData get(@Nonnull final World world) {
-		return getFile(world).getData(world.provider.getDimensionId());
+		return getFile(world).getData(world.provider.getDimension());
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public final class DimensionEffectDataFile extends WorldSavedData {
 	}
 
 	@Override
-	public void writeToNBT(@Nonnull final NBTTagCompound nbt) {
+	public NBTTagCompound writeToNBT(@Nonnull final NBTTagCompound nbt) {
 		final NBTTagList list = new NBTTagList();
 		for (final DimensionEffectData data : this.dataList.valueCollection()) {
 			final NBTTagCompound tag = new NBTTagCompound();
@@ -96,5 +96,6 @@ public final class DimensionEffectDataFile extends WorldSavedData {
 			list.appendTag(tag);
 		}
 		nbt.setTag(NBT.ENTRIES, list);
+		return nbt;
 	}
 }

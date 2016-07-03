@@ -54,10 +54,11 @@ public class GenerateBlockReport {
 	private List<String> results;
 
 	public GenerateBlockReport() {
+		// TODO total rewrite
 		this.justNames = new ArrayList<String>();
 		this.results = new ArrayList<String>();
 
-		for (Object o : Block.blockRegistry) {
+		for (Object o : Block.REGISTRY) {
 			Block block = (Block) o;
 			String name = MCHelper.nameOf(block);
 

@@ -38,11 +38,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class SoundBlockHandler implements IClientEffectHandler {
@@ -68,7 +68,7 @@ public class SoundBlockHandler implements IClientEffectHandler {
 		this.soundsToBlock.clear();
 		this.soundCull.clear();
 		final SoundHandler handler = Minecraft.getMinecraft().getSoundHandler();
-		for (final Object resource : handler.sndRegistry.getKeys()) {
+		for (final Object resource : handler.soundRegistry.getKeys()) {
 			final String rs = resource.toString();
 			if (SoundRegistry.isSoundBlocked(rs)) {
 				ModLog.debug("Blocking sound '%s'", rs);
@@ -82,12 +82,12 @@ public class SoundBlockHandler implements IClientEffectHandler {
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void soundEvent(final PlaySoundEvent event) {
-		if (event.sound == null)
+		if (event.getSound() == null)
 			return;
 
-		final String resource = event.sound.getSoundLocation().toString();
+		final String resource = event.getSound().getSoundLocation().toString();
 		if (this.soundsToBlock.contains(resource)) {
-			event.result = null;
+			event.setResultSound(null);
 			return;
 		}
 
@@ -101,7 +101,7 @@ public class SoundBlockHandler implements IClientEffectHandler {
 
 		final int currentTick = EnvironState.getTickCounter();
 		if ((currentTick - lastOccurance) < ModOptions.soundCullingThreshold) {
-			event.result = null;
+			event.setResultSound(null);
 		} else {
 			this.soundCull.put(resource, currentTick);
 		}

@@ -30,7 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.blockartistry.mod.DynSurround.data.config.SoundConfig;
 
 import net.minecraft.block.Block;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public final class SoundEffect {

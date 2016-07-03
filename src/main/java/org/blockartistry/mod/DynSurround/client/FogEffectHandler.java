@@ -35,20 +35,20 @@ import org.blockartistry.mod.DynSurround.util.PlayerUtils;
 import org.lwjgl.opengl.GL11;
 
 import gnu.trove.map.hash.TObjectIntHashMap;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class FogEffectHandler implements IClientEffectHandler {
@@ -104,10 +104,10 @@ public class FogEffectHandler implements IClientEffectHandler {
 		if (ModOptions.enableBiomeFog || ModOptions.allowDesertFog) {
 			final float brightnessFactor = world.getSunBrightness(1.0F);
 			final Color tint = new Color(0, 0, 0);
-			final TObjectIntHashMap<BiomeGenBase> weights = BiomeSurveyHandler.getBiomes();
+			final TObjectIntHashMap<Biome> weights = BiomeSurveyHandler.getBiomes();
 			final int area = BiomeSurveyHandler.getArea();
 
-			for (final BiomeGenBase b : weights.keySet()) {
+			for (final Biome b : weights.keySet()) {
 				final int weight = weights.get(b);
 				final float scale = ((float) weight / (float) area);
 				if (ModOptions.enableBiomeFog && BiomeRegistry.hasFog(b)) {
@@ -150,14 +150,14 @@ public class FogEffectHandler implements IClientEffectHandler {
 		if (currentFogLevel == 0)
 			return;
 
-		final Block block = ActiveRenderInfo.getBlockAtEntityViewpoint(event.entity.worldObj, event.entity,
-				(float) event.renderPartialTicks);
-		if (block.getMaterial() == Material.lava || block.getMaterial() == Material.water)
+		final IBlockState block = ActiveRenderInfo.getBlockStateAtEntityViewpoint(event.getEntity().worldObj, event.getEntity(),
+				(float) event.getRenderPartialTicks());
+		if (block.getMaterial() == Material.LAVA || block.getMaterial() == Material.WATER)
 			return;
 
-		event.red = currentFogColor.red;
-		event.green = currentFogColor.green;
-		event.blue = currentFogColor.blue;
+		event.setRed(currentFogColor.red);
+		event.setGreen(currentFogColor.green);
+		event.setBlue(currentFogColor.blue);
 		event.setResult(Result.ALLOW);
 	}
 
@@ -168,7 +168,7 @@ public class FogEffectHandler implements IClientEffectHandler {
 	 */
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void fogRenderEvent(final EntityViewRenderEvent.RenderFogEvent event) {
-		if (event.getResult() != Result.DEFAULT || event.fogMode < 0)
+		if (event.getResult() != Result.DEFAULT || event.getFogMode() < 0)
 			return;
 
 		if (currentFogLevel <= 0)
@@ -176,8 +176,8 @@ public class FogEffectHandler implements IClientEffectHandler {
 
 		float level = currentFogLevel;
 		final float factor = 1.0F + level * 100.0F;
-		final float near = (event.farPlaneDistance * 0.75F) / (factor * factor) + insideFogOffset;
-		final float horizon = event.farPlaneDistance / (factor) + insideFogOffset;
+		final float near = (event.getFarPlaneDistance() * 0.75F) / (factor * factor) + insideFogOffset;
+		final float horizon = event.getFarPlaneDistance() / (factor) + insideFogOffset;
 
 		float start = GL11.glGetFloat(GL11.GL_FOG_START);
 		float end = GL11.glGetFloat(GL11.GL_FOG_END);

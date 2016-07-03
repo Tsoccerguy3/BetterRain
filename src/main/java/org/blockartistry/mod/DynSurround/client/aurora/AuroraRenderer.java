@@ -24,18 +24,6 @@
 
 package org.blockartistry.mod.DynSurround.client.aurora;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.EntityRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.relauncher.Side;
-
 import org.blockartistry.mod.DynSurround.ModOptions;
 import org.blockartistry.mod.DynSurround.client.AuroraEffectHandler;
 import org.blockartistry.mod.DynSurround.client.IAtmosRenderer;
@@ -43,6 +31,18 @@ import org.blockartistry.mod.DynSurround.data.DimensionRegistry;
 import org.blockartistry.mod.DynSurround.util.Color;
 import org.blockartistry.mod.DynSurround.util.DiurnalUtils;
 import org.lwjgl.opengl.GL11;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public final class AuroraRenderer implements IAtmosRenderer {
@@ -69,7 +69,7 @@ public final class AuroraRenderer implements IAtmosRenderer {
 			return;
 
 		final Tessellator tess = Tessellator.getInstance();
-		final WorldRenderer renderer = tess.getWorldRenderer();
+		final VertexBuffer renderer = tess.getBuffer();
 		final float tranY;
 		if (ModOptions.auroraHeightPlayerRelative) {
 			// Fix height above player

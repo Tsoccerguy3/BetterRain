@@ -27,8 +27,8 @@ package org.blockartistry.mod.DynSurround.client;
 import javax.annotation.Nonnull;
 
 import net.minecraft.client.renderer.EntityRenderer;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public interface IAtmosRenderer {

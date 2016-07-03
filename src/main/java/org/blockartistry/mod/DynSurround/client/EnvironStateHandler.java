@@ -46,24 +46,24 @@ import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.potion.Potion;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class EnvironStateHandler implements IClientEffectHandler {
@@ -114,7 +114,7 @@ public class EnvironStateHandler implements IClientEffectHandler {
 		// to avoid requery. Used during the tick.
 		private static String conditions = "";
 		private static String biomeName = "";
-		private static BiomeGenBase playerBiome = null;
+		private static Biome playerBiome = null;
 		private static int dimensionId;
 		private static String dimensionName;
 		private static EntityPlayer player;
@@ -183,13 +183,13 @@ public class EnvironStateHandler implements IClientEffectHandler {
 				builder.append(CONDITION_SEPARATOR).append(CONDITION_TOKEN_INSIDE);
 			if (isPlayerRiding()) {
 				builder.append(CONDITION_SEPARATOR);
-				if (player.ridingEntity instanceof EntityMinecart)
+				if (player.getRidingEntity() instanceof EntityMinecart)
 					builder.append(CONDITION_TOKEN_MINECART);
-				else if (player.ridingEntity instanceof EntityHorse)
+				else if (player.getRidingEntity() instanceof EntityHorse)
 					builder.append(CONDITION_TOKEN_HORSE);
-				else if (player.ridingEntity instanceof EntityBoat)
+				else if (player.getRidingEntity() instanceof EntityBoat)
 					builder.append(CONDITION_TOKEN_BOAT);
-				else if (player.ridingEntity instanceof EntityPig)
+				else if (player.getRidingEntity() instanceof EntityPig)
 					builder.append(CONDITION_TOKEN_PIG);
 				else
 					builder.append(CONDITION_TOKEN_RIDING);
@@ -204,17 +204,17 @@ public class EnvironStateHandler implements IClientEffectHandler {
 			EnvironState.conditions = DimensionRegistry.getConditions(world) + getPlayerConditions(player);
 			EnvironState.playerBiome = PlayerUtils.getPlayerBiome(player, false);
 			EnvironState.biomeName = BiomeRegistry.resolveName(EnvironState.playerBiome);
-			EnvironState.dimensionId = world.provider.getDimensionId();
-			EnvironState.dimensionName = world.provider.getDimensionName();
+			EnvironState.dimensionId = world.provider.getDimension();
+			EnvironState.dimensionName = world.provider.getDimensionType().getName();
 			EnvironState.fog = FogEffectHandler.currentFogLevel() >= 0.01F;
 			EnvironState.inside = PlayerUtils.isReallyInside(EnvironState.player);
 
 			final BlockPos playerPos = new BlockPos(player.posX, player.posY, player.posZ);
-			final BiomeGenBase trueBiome = PlayerUtils.getPlayerBiome(player, true);
+			final Biome trueBiome = PlayerUtils.getPlayerBiome(player, true);
 			EnvironState.freezing = trueBiome.getFloatTemperature(playerPos) < 0.15F;
 			EnvironState.temperatureCategory = "tc" + trueBiome.getTempCategory().name().toLowerCase();
 			EnvironState.humid = trueBiome.isHighHumidity();
-			EnvironState.dry = trueBiome.getFloatRainfall() == 0;
+			EnvironState.dry = trueBiome.getRainfall() == 0;
 
 			if (!Minecraft.getMinecraft().isGamePaused())
 				EnvironState.tickCounter++;
@@ -224,7 +224,7 @@ public class EnvironStateHandler implements IClientEffectHandler {
 			return conditions;
 		}
 
-		public static BiomeGenBase getPlayerBiome() {
+		public static Biome getPlayerBiome() {
 			return playerBiome;
 		}
 
@@ -295,7 +295,7 @@ public class EnvironStateHandler implements IClientEffectHandler {
 		}
 
 		public static boolean isPlayerBlind() {
-			return getPlayer().isPotionActive(Potion.blindness);
+			return getPlayer().isPotionActive(MobEffects.BLINDNESS);
 		}
 
 		public static boolean isPlayerInWater() {
@@ -380,20 +380,20 @@ public class EnvironStateHandler implements IClientEffectHandler {
 
 	@SubscribeEvent
 	public void onJump(final LivingJumpEvent event) {
-		if (JUMP == null || event.entity == null || event.entity.worldObj == null)
+		if (JUMP == null || event.getEntity() == null || event.getEntity().worldObj == null)
 			return;
 
-		if (event.entity.worldObj.isRemote && EnvironState.isPlayer(event.entity))
+		if (event.getEntity().worldObj.isRemote && EnvironState.isPlayer(event.getEntity()))
 			SoundManager.playSoundAtPlayer(EnvironState.getPlayer(), JUMP);
 	}
 
 	@SubscribeEvent
-	public void onItemUse(final AttackEntityEvent event) {
-		if (SWORD == null || event.entityPlayer == null || event.entityPlayer.worldObj == null)
+	public void onAttack(final AttackEntityEvent event) {
+		if (SWORD == null || event.getEntityPlayer() == null || event.getEntityPlayer().worldObj == null)
 			return;
 
-		if (event.entityPlayer.worldObj.isRemote && EnvironState.isPlayer(event.entityPlayer)) {
-			final ItemStack currentItem = event.entityPlayer.getCurrentEquippedItem();
+		if (event.getEntityPlayer().worldObj.isRemote && EnvironState.isPlayer(event.getEntityPlayer())) {
+			final ItemStack currentItem = event.getEntityPlayer().getCurrentEquippedItem();
 			if (currentItem != null) {
 				SoundEffect sound = null;
 				final Item item = currentItem.getItem();

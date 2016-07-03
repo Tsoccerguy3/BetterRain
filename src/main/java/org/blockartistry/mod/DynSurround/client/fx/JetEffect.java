@@ -35,10 +35,11 @@ import org.blockartistry.mod.DynSurround.client.fx.particle.EntitySteamJetFX;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public abstract class JetEffect extends BlockEffect {
@@ -51,7 +52,7 @@ public abstract class JetEffect extends BlockEffect {
 		int count = 0;
 		int idx = pos.getY();
 		while (count < MAX_STRENGTH) {
-			if (world.getBlockState(pos1.set(pos.getX(), idx, pos.getZ())).getBlock() != block)
+			if (world.getBlockState(pos1.setPos(pos.getX(), idx, pos.getZ())).getBlock() != block)
 				return count;
 			count++;
 			idx += dir;
@@ -102,7 +103,7 @@ public abstract class JetEffect extends BlockEffect {
 		@Override
 		public boolean trigger(final Block block, final World world, final BlockPos pos, final Random random) {
 			return super.trigger(block, world, pos, random)
-					&& world.getBlockState(pos.down()).getBlock().getMaterial().isSolid();
+					&& world.getBlockState(pos.down()).getMaterial().isSolid();
 		}
 
 		public void doEffect(final Block block, final World world, final BlockPos pos, final Random random) {
@@ -124,7 +125,7 @@ public abstract class JetEffect extends BlockEffect {
 			for (int i = -1; i <= 1; i++)
 				for (int j = -1; j <= 1; j++)
 					for (int k = -1; k <= 1; k++) {
-						if (world.getBlockState(pos.add(i, j, k)).getBlock() == Blocks.lava)
+						if (world.getBlockState(pos.add(i, j, k)).getMaterial() == Material.LAVA)
 							blockCount++;
 					}
 			return blockCount;
