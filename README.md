@@ -1,13 +1,10 @@
-###Build Status
-Master Branch: [![Master Branch](https://travis-ci.org/OreCruncher/BetterRain.svg?branch=master)](https://travis-ci.org/OreCruncher/BetterRain)
-
-### BetterRain
-Minecraft mod that improves the rain experience.
+### Dynamic Surroundings Unofficial
+Unofficial port of Dynamic Surroundings mod for Minecraft 1.10.2
 
 ###License
 The MIT License (MIT)
 
-Copyright (c) 2015 OreCruncher
+Copyright (c) 2015 OreCruncher, Abastro
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
