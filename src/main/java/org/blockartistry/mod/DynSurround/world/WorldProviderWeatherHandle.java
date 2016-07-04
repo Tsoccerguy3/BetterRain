@@ -25,7 +25,9 @@
 package org.blockartistry.mod.DynSurround.world;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 
+import org.blockartistry.mod.DynSurround.ModLog;
 import org.blockartistry.mod.DynSurround.ModOptions;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -35,22 +37,41 @@ import org.objectweb.asm.Type;
 
 import com.google.common.base.Throwables;
 
+import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
+import net.minecraft.world.WorldProviderSurface;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModClassLoader;
 
 public class WorldProviderWeatherHandle extends WorldProviderShimBase {
 	
-	private boolean patchWeather = false;
+	private boolean patchWeather = true;
 
 	public WorldProviderWeatherHandle(final World world, final WorldProvider provider) {
 		super(world, provider);
+
+		if(provider.getClass() == WorldProviderSurface.class)
+			return;
+		
+		ModLog.info("Processing inspection on world provider class %s for compat", provider.getClass().getName());
 		
 		try {
-			new ClassReader(provider.getClass().getName()).accept(new ClassVisitor(Opcodes.ASM5) {
+			ModClassLoader modClassLoader = Loader.instance().getModClassLoader();
+			Field mainLoaderField = modClassLoader.getClass().getDeclaredField("mainClassLoader");
+			mainLoaderField.setAccessible(true);
+			LaunchClassLoader classLoader = (LaunchClassLoader) mainLoaderField.get(modClassLoader);
+
+			new ClassReader(classLoader.getClassBytes(provider.getClass().getName())).accept(new ClassVisitor(Opcodes.ASM5) {
 				@Override
 				public MethodVisitor visitMethod(int access, String name, String desc, 
 						String signature, String[] exceptions) {
 					if(name.equals("updateWeather")) {
+			        	ModLog.info("Visiting method %s with description %s named updateWeather() on WorldProvider",
+			        			name, desc);
+			        	
+			        	patchWeather = false;
+						
 						return new MethodVisitor(Opcodes.ASM5) {
 							boolean isTheMethod = true;
 
@@ -60,14 +81,21 @@ public class WorldProviderWeatherHandle extends WorldProviderShimBase {
 							}
 
 					        @Override
-					        public void visitMethodInsn(int opcode, String owner, 
-					            String name, String desc) {
+					        public void visitMethodInsn(int opcode, String owner, String name,
+					                String desc, boolean itf) {
 					        	if(!this.isTheMethod)
 					        		return;
 
+					        	ModLog.info("Visiting method call %s with description %s during inspection on WorldProvider#updateWeather(), for compat",
+					        			name, desc);
+					        	
 					        	try {
-									if(desc.equals(Type.getMethodDescriptor(World.class.getMethod("updateWeatherBody")))) {
+									if(name.equals("updateWeatherBody") && desc.equals(Type.getMethodDescriptor(World.class.getMethod("updateWeatherBody")))) {
 										patchWeather = true;
+										ModLog.info("Found World#updateWeatherBody() from WorldProvider#updateWeather()");
+									} else if(name.equals("updateWeather") && desc.equals(Type.getMethodDescriptor(WorldProvider.class.getMethod("updateWeather")))) {
+										patchWeather = true;
+										ModLog.info("Found WorldProvider#updateWeather() from WorldProvider#updateWeather()");
 									}
 								} catch (NoSuchMethodException exc) {
 									Throwables.propagate(exc);
@@ -77,8 +105,10 @@ public class WorldProviderWeatherHandle extends WorldProviderShimBase {
 					}
 					return null;
 				}
-			}, ClassReader.SKIP_DEBUG);
+			}, 0);
 		} catch (IOException exc) {
+			Throwables.propagate(exc);
+		} catch (ReflectiveOperationException exc) {
 			Throwables.propagate(exc);
 		}
 	}
