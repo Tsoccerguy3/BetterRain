@@ -56,10 +56,6 @@ public class ProxyClient extends Proxy {
 		super.preInit(event);
 
 		SoundManager.configureSound();
-
-		// Particle Overrides, don't know where it should be
-		Minecraft.getMinecraft().effectRenderer.registerParticle(
-				EnumParticleTypes.WATER_DROP.getParticleID(), new ParticleRainOverride.Factory());
 	}
 
 	@Override
@@ -69,6 +65,10 @@ public class ProxyClient extends Proxy {
 		ClientEffectHandler.initialize();
 		GuiHUDHandler.initialize();
 		SoundRegistry.initialize();
+		
+		// Particle Overrides, don't know where it should be
+		Minecraft.getMinecraft().effectRenderer.registerParticle(
+				EnumParticleTypes.WATER_DROP.getParticleID(), new ParticleRainOverride.Factory());
 	}
 	
 	@Override

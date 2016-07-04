@@ -17,6 +17,7 @@
 /README.txt
 /usernamecache.json
 /saves/
+/run/
 /.classpath
 /.gradle/
 /.project

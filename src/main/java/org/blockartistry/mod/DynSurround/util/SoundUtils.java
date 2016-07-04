@@ -37,8 +37,8 @@ public class SoundUtils {
 	public static SoundEvent getOrRegisterSound(final ResourceLocation location) {
 		if(SoundEvent.REGISTRY.containsKey(location))
 			return SoundEvent.REGISTRY.getObject(location);
-
-		SoundEvent sound = new SoundEvent(location);
+		
+		SoundEvent sound = new SoundEvent(location).setRegistryName(location);
 		GameRegistry.register(sound);
 		return sound;
 	}

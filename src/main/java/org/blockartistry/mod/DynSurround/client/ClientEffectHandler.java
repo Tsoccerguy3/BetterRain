@@ -108,7 +108,7 @@ public class ClientEffectHandler {
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void renderTick(final TickEvent.RenderTickEvent event) {
 		WorldClient world = Minecraft.getMinecraft().theWorld;
-		if(event.phase == Phase.START) {
+		if(event.phase == Phase.START && world != null) {
 			IRenderHandler weatherRenderer = world.provider.getWeatherRenderer();
 			if(!(weatherRenderer instanceof RenderWeather))
 				world.provider.setWeatherRenderer(RenderWeather.setParent(weatherRenderer));
