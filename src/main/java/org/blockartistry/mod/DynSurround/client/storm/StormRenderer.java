@@ -33,6 +33,7 @@ import org.blockartistry.mod.DynSurround.util.Color;
 import org.blockartistry.mod.DynSurround.util.XorShiftRandom;
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -50,7 +51,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class StormRenderer implements IAtmosRenderer {
+public class StormRenderer extends IAtmosRenderer {
 
 	private static final XorShiftRandom random = new XorShiftRandom();
 
@@ -83,19 +84,20 @@ public class StormRenderer implements IAtmosRenderer {
 	/**
 	 * Render rain and snow
 	 */
-	public void render(final EntityRenderer renderer, final float partialTicks) {
+	@Override
+	public void render(float partialTicks, WorldClient world, Minecraft mc, IRenderHandler parent) {
 
 		StormProperties.setTextures();
-		final World world = renderer.mc.theWorld;
 
-		IRenderHandler r = world.provider.getWeatherRenderer();
-		if (r != null) {
-			r.render(partialTicks, (WorldClient) world, renderer.mc);
+		if (parent != null) {
+			parent.render(partialTicks, world, mc);
 			return;
 		}
 
 		if (!DimensionRegistry.hasWeather(world))
 			return;
+		
+		EntityRenderer renderer = mc.entityRenderer;
 
 		final float rainStrength = world.getRainStrength(partialTicks);
 		if (rainStrength <= 0.0F)

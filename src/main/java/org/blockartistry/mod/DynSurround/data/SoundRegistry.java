@@ -81,22 +81,30 @@ public final class SoundRegistry {
 
 	}
 
-	public static boolean isSoundCulled(final String sound) {
+	public static boolean isSoundCulled(final String soundName) {
 		for (final Pattern pattern : cullSoundNamePatterns)
-			if (pattern.matcher(sound).matches())
+			if (pattern.matcher(soundName).matches())
 				return true;
 		return false;
 	}
 
-	public static boolean isSoundBlocked(final String sound) {
+	public static boolean isSoundBlocked(final String soundName) {
 		for (final Pattern pattern : blockSoundNamePatterns)
-			if (pattern.matcher(sound).matches())
+			if (pattern.matcher(soundName).matches())
 				return true;
 		return false;
+	}
+	
+	public static boolean hasCustomVolumeScale(final String soundName) {
+		return volumeControl.contains(soundName);
+	}
+
+	public static float getCustomVolumeScale(final String soundName) {
+		return volumeControl.get(soundName);
 	}
 
 	public static float getVolumeScale(final String soundName) {
-		return volumeControl.contains(soundName) ? volumeControl.get(soundName) : 1.0F;
+		return hasCustomVolumeScale(soundName)? getCustomVolumeScale(soundName) : 1.0f;
 	}
 
 }

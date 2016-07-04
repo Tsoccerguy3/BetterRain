@@ -1,7 +1,7 @@
 /*
- * This file is part of Dynamic Surroundings, licensed under the MIT License (MIT).
+ * This file is part of Dynamic Surroundings Unofficial, licensed under the MIT License (MIT).
  *
- * Copyright (c) OreCruncher
+ * Copyright (c) OreCruncher, Abastro
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,14 +32,20 @@ import org.blockartistry.mod.DynSurround.client.aurora.AuroraRenderer;
 import org.blockartistry.mod.DynSurround.client.storm.StormRenderer;
 import org.blockartistry.mod.DynSurround.client.storm.StormSplashRenderer;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public final class RenderWeather {
+public final class RenderWeather extends IRenderHandler {
 
 	private static final List<IAtmosRenderer> renderList = new ArrayList<IAtmosRenderer>();
+	private static final RenderWeather instance = new RenderWeather();
+
+	private IRenderHandler parent;
 
 	public static void register(final IAtmosRenderer renderer) {
 		renderList.add(renderer);
@@ -48,6 +54,11 @@ public final class RenderWeather {
 	static {
 		register(new StormRenderer());
 		register(new AuroraRenderer());
+	}
+	
+	public static IRenderHandler setParent(IRenderHandler parentRenderer) {
+		instance.parent = parentRenderer;
+		return instance;
 	}
 
 	/*
@@ -61,11 +72,10 @@ public final class RenderWeather {
 
 	/*
 	 * Render atmospheric effects.
-	 * 
-	 * Redirect from EntityRenderer.
 	 */
-	public static void renderRainSnow(final EntityRenderer theThis, final float partialTicks) {
+	@Override
+	public void render(float partialTicks, WorldClient world, Minecraft mc) {
 		for (final IAtmosRenderer renderer : renderList)
-			renderer.render(theThis, partialTicks);
+			renderer.render(partialTicks, world, mc, this.parent);
 	}
 }

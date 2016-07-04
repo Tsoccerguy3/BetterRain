@@ -1,7 +1,7 @@
 /*
- * This file is part of Dynamic Surroundings, licensed under the MIT License (MIT).
+ * This file is part of Dynamic Surroundings Unofficial, licensed under the MIT License (MIT).
  *
- * Copyright (c) OreCruncher
+ * Copyright (c) OreCruncher, Abastro
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,17 +22,32 @@
  * THE SOFTWARE.
  */
 
-package org.blockartistry.mod.DynSurround.server;
+package org.blockartistry.mod.DynSurround.util;
 
-import org.blockartistry.mod.DynSurround.ModOptions;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.WorldProvider;
 
-public class PlayerSleepHandler {
+public class WorldUtils {
 	
-	public static void resetRainAndThunder(final WorldServer world) {
-		if(ModOptions.resetRainOnSleep)
-			world.provider.resetRainAndThunder();
+	private static final List<String> dimensionNamePatterns = new ArrayList<String>();
+	
+	static {
+		dimensionNamePatterns.add("^Nether");
+		dimensionNamePatterns.add("^The End");
+		dimensionNamePatterns.add("^Tardis Interior");
 	}
+	
+	public static boolean isDimensionHasSky(final WorldProvider provider) {
+		if (provider.getHasNoSky())
+			return false;
 
+		final String name = provider.getDimensionType().getName();
+		for (final String pattern : dimensionNamePatterns)
+			if (Pattern.matches(pattern, name))
+				return false;
+		return true;
+	}
 }

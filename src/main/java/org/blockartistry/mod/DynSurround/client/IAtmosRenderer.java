@@ -24,15 +24,14 @@
 
 package org.blockartistry.mod.DynSurround.client;
 
-import javax.annotation.Nonnull;
-
-import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public interface IAtmosRenderer {
-	
-	public void render(@Nonnull final EntityRenderer renderer, final float partialTicks);
+public abstract class IAtmosRenderer {
 
+	public abstract void render(float partialTicks, WorldClient world, Minecraft mc, IRenderHandler parent);
 }

@@ -1,7 +1,7 @@
 /*
- * This file is part of Dynamic Surroundings, licensed under the MIT License (MIT).
+ * This file is part of Dynamic Surroundings Unofficial, licensed under the MIT License (MIT).
  *
- * Copyright (c) OreCruncher
+ * Copyright (c) OreCruncher, Abastro
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,8 +35,13 @@ import org.blockartistry.mod.DynSurround.event.SoundConfigEvent;
 
 import gnu.trove.map.hash.TObjectIntHashMap;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.Sound;
+import net.minecraft.client.audio.SoundEventAccessor;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -45,12 +50,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class SoundBlockHandler implements IClientEffectHandler {
+public class SoundControlHandler implements IClientEffectHandler {
 
 	private final List<String> soundsToBlock = new ArrayList<String>();
 	private final TObjectIntHashMap<String> soundCull = new TObjectIntHashMap<String>();
 
-	public SoundBlockHandler() {
+	public SoundControlHandler() {
 	}
 
 	@Override
@@ -102,8 +107,83 @@ public class SoundBlockHandler implements IClientEffectHandler {
 		final int currentTick = EnvironState.getTickCounter();
 		if ((currentTick - lastOccurance) < ModOptions.soundCullingThreshold) {
 			event.setResultSound(null);
+			return;
 		} else {
 			this.soundCull.put(resource, currentTick);
+		}
+		
+		if(SoundRegistry.hasCustomVolumeScale(resource))
+			event.setResultSound(new SoundShim(event.getSound(), SoundRegistry.getCustomVolumeScale(resource)));
+	}
+
+	private class SoundShim implements ISound {
+
+		private ISound parent;
+		private float volumeMultiplier;
+		
+		public SoundShim(ISound parent, float volumeMultiplier) {
+			this.parent = parent;
+			this.volumeMultiplier = volumeMultiplier;
+		}
+
+		@Override
+		public ResourceLocation getSoundLocation() {
+			return parent.getSoundLocation();
+		}
+
+		@Override
+		public SoundEventAccessor createAccessor(SoundHandler handler) {
+			return parent.createAccessor(handler);
+		}
+
+		@Override
+		public Sound getSound() {
+			return parent.getSound();
+		}
+
+		@Override
+		public SoundCategory getCategory() {
+			return parent.getCategory();
+		}
+
+		@Override
+		public boolean canRepeat() {
+			return parent.canRepeat();
+		}
+
+		@Override
+		public int getRepeatDelay() {
+			return parent.getRepeatDelay();
+		}
+
+		@Override
+		public float getVolume() {
+			return parent.getVolume() * this.volumeMultiplier;
+		}
+
+		@Override
+		public float getPitch() {
+			return parent.getPitch();
+		}
+
+		@Override
+		public float getXPosF() {
+			return parent.getXPosF();
+		}
+
+		@Override
+		public float getYPosF() {
+			return parent.getYPosF();
+		}
+
+		@Override
+		public float getZPosF() {
+			return parent.getZPosF();
+		}
+
+		@Override
+		public AttenuationType getAttenuationType() {
+			return parent.getAttenuationType();
 		}
 	}
 }

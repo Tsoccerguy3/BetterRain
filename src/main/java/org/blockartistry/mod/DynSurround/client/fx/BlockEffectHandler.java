@@ -39,6 +39,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -78,7 +79,7 @@ public class BlockEffectHandler implements IClientEffectHandler {
 
 				final SoundEffect sound = BlockRegistry.getSound(block, random, conditions);
 				if (sound != null)
-					sound.doEffect(state, world, pos, random);
+					sound.doEffect(state, world, pos, SoundCategory.BLOCKS, random);
 			}
 		}
 
@@ -89,7 +90,7 @@ public class BlockEffectHandler implements IClientEffectHandler {
 			if (!MCHelper.isAirBlock(state, world, pos) && !state.getMaterial().isLiquid()) {
 				final SoundEffect sound = BlockRegistry.getStepSound(block, random, conditions);
 				if (sound != null)
-					sound.doEffect(state, world, pos, random);
+					sound.doEffect(state, world, pos, SoundCategory.BLOCKS, random);
 			}
 		}
 	}

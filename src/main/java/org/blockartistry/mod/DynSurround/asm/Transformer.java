@@ -49,15 +49,6 @@ public class Transformer implements IClassTransformer {
 		if ("net.minecraft.client.renderer.EntityRenderer".equals(name) || "bfk".equals(name)) {
 			logger.debug("Transforming EntityRenderer...");
 			return transformEntityRenderer(basicClass);
-		} else if ("net.minecraft.world.WorldServer".equals(name) || "le".equals(name)) {
-			logger.debug("Transforming WorldServer...");
-			return transformWorldServer(basicClass);
-		} else if ("net.minecraft.world.World".equals(name) || "adm".equals(name)) {
-			logger.debug("Transforming World...");
-			return transformWorld(basicClass);
-		} else if ("net.minecraft.client.audio.SoundManager".equals(name) || "bpx".equals(name)) {
-			logger.debug("Transforming SoundManager...");
-			return transformSoundManager(basicClass);
 		}
 
 		return basicClass;
@@ -67,11 +58,11 @@ public class Transformer implements IClassTransformer {
 		final String names[];
 
 		if (TransformLoader.runtimeDeobEnabled)
-			names = new String[] { "func_78474_d", "func_78484_h" };
+			names = new String[] { "func_78484_h" };
 		else
-			names = new String[] { "renderRainSnow", "addRainParticles" };
+			names = new String[] { "addRainParticles" };
 
-		final String targetName[] = new String[] { "renderRainSnow", "addRainParticles" };
+		final String targetName[] = new String[] {"addRainParticles" };
 
 		final ClassReader cr = new ClassReader(classBytes);
 		final ClassNode cn = new ClassNode(ASM5);
@@ -80,124 +71,13 @@ public class Transformer implements IClassTransformer {
 		for (final MethodNode m : cn.methods) {
 			if (m.name.equals(names[0])) {
 				logger.debug("Hooking " + names[0]);
-				InsnList list = new InsnList();
-				list.add(new VarInsnNode(ALOAD, 0));
-				list.add(new VarInsnNode(FLOAD, 1));
-				final String sig = "(Lnet/minecraft/client/renderer/EntityRenderer;F)V";
-				list.add(new MethodInsnNode(INVOKESTATIC, "org/blockartistry/mod/DynSurround/client/RenderWeather",
-						targetName[0], sig, false));
-				list.add(new InsnNode(RETURN));
-				m.instructions.insertBefore(m.instructions.getFirst(), list);
-			} else if (m.name.equals(names[1])) {
-				logger.debug("Hooking " + names[1]);
 				InsnList list = new InsnList();
 				list.add(new VarInsnNode(ALOAD, 0));
 				final String sig = "(Lnet/minecraft/client/renderer/EntityRenderer;)V";
 				list.add(new MethodInsnNode(INVOKESTATIC, "org/blockartistry/mod/DynSurround/client/RenderWeather",
-						targetName[1], sig, false));
-				list.add(new InsnNode(RETURN));
-				m.instructions.insertBefore(m.instructions.getFirst(), list);
-			}
-		}
-
-		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-		cn.accept(cw);
-		return cw.toByteArray();
-	}
-
-	private byte[] transformWorldServer(final byte[] classBytes) {
-		final String names[];
-
-		if (TransformLoader.runtimeDeobEnabled)
-			names = new String[] { "func_73051_P" };
-		else
-			names = new String[] { "resetRainAndThunder" };
-
-		final String targetName[] = new String[] { "resetRainAndThunder" };
-
-		final ClassReader cr = new ClassReader(classBytes);
-		final ClassNode cn = new ClassNode(ASM5);
-		cr.accept(cn, 0);
-
-		for (final MethodNode m : cn.methods) {
-			if (m.name.equals(names[0])) {
-				logger.debug("Hooking " + names[0]);
-				InsnList list = new InsnList();
-				list.add(new VarInsnNode(ALOAD, 0));
-				final String sig = "(Lnet/minecraft/world/WorldServer;)V";
-				list.add(new MethodInsnNode(INVOKESTATIC, "org/blockartistry/mod/DynSurround/server/PlayerSleepHandler",
 						targetName[0], sig, false));
 				list.add(new InsnNode(RETURN));
 				m.instructions.insertBefore(m.instructions.getFirst(), list);
-				break;
-			}
-		}
-
-		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-		cn.accept(cw);
-		return cw.toByteArray();
-	}
-
-	private byte[] transformWorld(final byte[] classBytes) {
-		final String names[];
-
-		if (TransformLoader.runtimeDeobEnabled)
-			names = new String[] { "updateWeatherBody" };
-		else
-			names = new String[] { "updateWeatherBody" };
-
-		final String targetName[] = new String[] { "updateWeatherBody" };
-
-		final ClassReader cr = new ClassReader(classBytes);
-		final ClassNode cn = new ClassNode(ASM5);
-		cr.accept(cn, 0);
-
-		for (final MethodNode m : cn.methods) {
-			if (m.name.equals(names[0])) {
-				logger.debug("Hooking " + names[0]);
-				InsnList list = new InsnList();
-				list.add(new VarInsnNode(ALOAD, 0));
-				final String sig = "(Lnet/minecraft/world/World;)V";
-				list.add(new MethodInsnNode(INVOKESTATIC, "org/blockartistry/mod/DynSurround/server/WorldHandler",
-						targetName[0], sig, false));
-				list.add(new InsnNode(RETURN));
-				m.instructions.insertBefore(m.instructions.getFirst(), list);
-				break;
-			}
-		}
-
-		final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-		cn.accept(cw);
-		return cw.toByteArray();
-	}
-
-	private byte[] transformSoundManager(final byte[] classBytes) {
-		final String names[];
-
-		if (TransformLoader.runtimeDeobEnabled)
-			names = new String[] { "func_148594_a" };
-		else
-			names = new String[] { "getNormalizedVolume" };
-
-		final String targetName[] = new String[] { "getNormalizedVolume" };
-
-		final ClassReader cr = new ClassReader(classBytes);
-		final ClassNode cn = new ClassNode(ASM5);
-		cr.accept(cn, 0);
-
-		for (final MethodNode m : cn.methods) {
-			if (m.name.equals(names[0])) {
-				logger.debug("Hooking " + names[0]);
-				final InsnList list = new InsnList();
-				list.add(new VarInsnNode(ALOAD, 1));
-				list.add(new VarInsnNode(ALOAD, 2));
-				list.add(new VarInsnNode(ALOAD, 3));
-				final String sig = "(Lnet/minecraft/client/audio/ISound;Lnet/minecraft/client/audio/SoundPoolEntry;Lnet/minecraft/client/audio/SoundCategory;)F";
-				list.add(new MethodInsnNode(INVOKESTATIC, "org/blockartistry/mod/DynSurround/client/sound/SoundManager",
-						targetName[0], sig, false));
-				list.add(new InsnNode(FRETURN));
-				m.instructions.insertBefore(m.instructions.getFirst(), list);
-				break;
 			}
 		}
 

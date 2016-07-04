@@ -71,7 +71,7 @@ dependencies {
     
     compile "foxie:Calendar:1.10-1.5-9:deobf"
     
-    //compile "mcp.mobius.waila:Waila:1.6.0-B3_1.8.8:dev"
+    compile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4:dev"
     // compile 'net.sengir.forestry:forestry_1.7.10:3.6.3.20:dev'
     // compile name: "buildcraft", version: "7.0.21", classifier: "dev"
     // compile name: 'MineTweaker3', version: "Dev-1.7.10-3.0.9C", ext: 'jar'

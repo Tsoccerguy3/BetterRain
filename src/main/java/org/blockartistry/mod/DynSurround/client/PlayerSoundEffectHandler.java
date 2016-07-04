@@ -112,12 +112,12 @@ public class PlayerSoundEffectHandler implements IClientEffectHandler {
 		if (doBiomeSounds()) {
 			SoundEffect sound = BiomeRegistry.getSpotSound(playerBiome, conditions, EnvironState.RANDOM);
 			if (sound != null)
-				SoundManager.playSoundAtPlayer(player, sound);
+				SoundManager.playSoundAtPlayer(player, sound, SoundCategory.AMBIENT);
 		}
 
 		SoundEffect sound = BiomeRegistry.getSpotSound(BiomeRegistry.PLAYER, conditions, EnvironState.RANDOM);
 		if (sound != null)
-			SoundManager.playSoundAtPlayer(player, sound);
+			SoundManager.playSoundAtPlayer(player, sound, SoundCategory.AMBIENT);
 
 		processWaterDrops();
 

@@ -26,17 +26,19 @@ package org.blockartistry.mod.DynSurround.client;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.blockartistry.mod.DynSurround.ModOptions;
 import org.blockartistry.mod.DynSurround.client.footsteps.Footsteps;
 import org.blockartistry.mod.DynSurround.client.fx.BlockEffectHandler;
 import org.blockartistry.mod.DynSurround.data.DimensionRegistry;
+import org.blockartistry.mod.DynSurround.util.WorldUtils;
+import org.blockartistry.mod.DynSurround.world.WorldProviderCloudColorHandle;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldProvider;
+import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -50,15 +52,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientEffectHandler {
 
-	// These dimensions will be excluded from shimming
-	private static final List<String> dimensionNamePatterns = new ArrayList<String>();
 	private static final List<IClientEffectHandler> effectHandlers = new ArrayList<IClientEffectHandler>();
-
-	static {
-		dimensionNamePatterns.add("^Nether");
-		dimensionNamePatterns.add("^The End");
-		dimensionNamePatterns.add("^Tardis Interior");
-	}
 
 	public static void register(final IClientEffectHandler handler) {
 		effectHandlers.add(handler);
@@ -80,7 +74,7 @@ public class ClientEffectHandler {
 		register(new BlockEffectHandler());
 
 		if (ModOptions.blockedSounds.length > 0 || ModOptions.culledSounds.length > 0)
-			register(new SoundBlockHandler());
+			register(new SoundControlHandler());
 
 		if (ModOptions.enableFootstepSounds)
 			register(new Footsteps());
@@ -110,31 +104,33 @@ public class ClientEffectHandler {
 				handler.process(world, player);
 		}
 	}
-
-	private static boolean okToHook(final WorldProvider provider) {
-		if (provider.getHasNoSky())
-			return false;
-
-		final String name = provider.getDimensionType().getName();
-		for (final String pattern : dimensionNamePatterns)
-			if (Pattern.matches(pattern, name))
-				return false;
-		return true;
+	
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void renderTick(final TickEvent.RenderTickEvent event) {
+		WorldClient world = Minecraft.getMinecraft().theWorld;
+		if(event.phase == Phase.START) {
+			IRenderHandler weatherRenderer = world.provider.getWeatherRenderer();
+			if(!(weatherRenderer instanceof RenderWeather))
+				world.provider.setWeatherRenderer(RenderWeather.setParent(weatherRenderer));
+		}
 	}
+
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onWorldLoad(final WorldEvent.Load e) {
-		if (!e.getWorld().isRemote)
+		World world = e.getWorld();
+		
+		if (!world.isRemote)
 			return;
 
 		// Tickle the Dimension Registry so it has the
 		// latest info.
-		DimensionRegistry.loading(e.getWorld());
+		DimensionRegistry.loading(world);
 
 		// Shim the provider so we can tap into the
 		// sky and cloud stuff.
-		if (ModOptions.enableFancyCloudHandling && okToHook(e.getWorld().provider)) {
-			e.getWorld().provider = new WorldProviderShim(e.getWorld(), e.getWorld().provider);
-		}
+		if (ModOptions.enableFancyCloudHandling && WorldUtils.isDimensionHasSky(world.provider)) {
+			world.provider = new WorldProviderCloudColorHandle(world, world.provider);
+		}	
 	}
 }

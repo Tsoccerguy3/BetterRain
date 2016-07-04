@@ -36,15 +36,19 @@ import org.blockartistry.mod.DynSurround.ModOptions;
 import org.blockartistry.mod.DynSurround.client.footsteps.Footsteps;
 import org.blockartistry.mod.DynSurround.client.footsteps.mcpackage.interfaces.IBlockMap;
 
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
+import mcp.mobius.waila.api.IWailaDataProvider;
+import mcp.mobius.waila.api.IWailaRegistrar;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -53,10 +57,6 @@ import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameData;
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
-import mcp.mobius.waila.api.IWailaDataProvider;
-import mcp.mobius.waila.api.IWailaRegistrar;
 //TODO 1.9.4 WAILA compat
 @Optional.Interface(iface = "mcp.mobius.waila.api.IWailaDataProvider", modid = "Waila")
 public final class WailaHandler implements IWailaDataProvider {
@@ -67,7 +67,7 @@ public final class WailaHandler implements IWailaDataProvider {
 		if(stack == null || stack.getItem() == null)
 			return text;
 
-		text.add(EnumChatFormatting.GOLD + "dsurround");
+		text.add(TextFormatting.GOLD + "dsurround");
 
 		final Item item = stack.getItem();
 		final ResourceLocation blockName = GameData.getItemRegistry().getNameForObject(item);
@@ -140,10 +140,10 @@ public final class WailaHandler implements IWailaDataProvider {
 	@SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = false)
 	public void onToolTipEvent(final ItemTooltipEvent event) {
 
-		if (event == null || event.itemStack == null || event.toolTip == null)
+		if (event == null || event.getItemStack() == null || event.getToolTip() == null)
 			return;
 
-		gatherText(event.itemStack, event.toolTip, null, null);
+		gatherText(event.getItemStack(), event.getToolTip(), null, null);
 	}
 
 	public static void register() {

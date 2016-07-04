@@ -32,6 +32,7 @@ import net.minecraft.client.particle.ParticleFlame;
 import net.minecraft.client.particle.ParticleLava;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -55,7 +56,7 @@ public class ParticleFireJet extends ParticleJet {
 		final int x = MathHelper.floor_double(this.posX);
 		final int y = MathHelper.floor_double(this.posY);
 		final int z = MathHelper.floor_double(this.posZ);
-		SoundManager.playSoundAt(new BlockPos(x, y, z), FIRE, 0);
+		SoundManager.playSoundAt(new BlockPos(x, y, z), FIRE, 0, SoundCategory.BLOCKS);
 	}
 
 	@Override

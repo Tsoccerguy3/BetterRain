@@ -52,6 +52,7 @@ import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -384,7 +385,7 @@ public class EnvironStateHandler implements IClientEffectHandler {
 			return;
 
 		if (event.getEntity().worldObj.isRemote && EnvironState.isPlayer(event.getEntity()))
-			SoundManager.playSoundAtPlayer(EnvironState.getPlayer(), JUMP);
+			SoundManager.playSoundAtPlayer(EnvironState.getPlayer(), JUMP, event.getEntity().getSoundCategory());
 	}
 
 	@SubscribeEvent
@@ -403,7 +404,7 @@ public class EnvironStateHandler implements IClientEffectHandler {
 					sound = AXE;
 
 				if (sound != null)
-					SoundManager.playSoundAtPlayer(EnvironState.getPlayer(), sound);
+					SoundManager.playSoundAtPlayer(EnvironState.getPlayer(), sound, SoundCategory.PLAYERS);
 			}
 		}
 	}
@@ -418,7 +419,7 @@ public class EnvironStateHandler implements IClientEffectHandler {
 		if (event.player.worldObj.isRemote && EnvironState.isPlayer(event.player)) {
 			if (craftSoundThrottle < (EnvironState.getTickCounter() - 30)) {
 				craftSoundThrottle = EnvironState.getTickCounter();
-				SoundManager.playSoundAtPlayer(EnvironState.getPlayer(), CRAFTING);
+				SoundManager.playSoundAtPlayer(EnvironState.getPlayer(), CRAFTING, SoundCategory.PLAYERS);
 			}
 		}
 
@@ -431,7 +432,7 @@ public class EnvironStateHandler implements IClientEffectHandler {
 			return;
 
 		if (event.getEntityLiving().worldObj.isRemote && event.getItem().getItem() instanceof ItemBow) {
-			SoundManager.playSoundAtPlayer(EnvironState.getPlayer(), BOW_PULL);
+			SoundManager.playSoundAtPlayer(EnvironState.getPlayer(), BOW_PULL, event.getEntityLiving().getSoundCategory());
 		}
 	}
 

@@ -33,22 +33,23 @@ import org.blockartistry.mod.DynSurround.util.DiurnalUtils;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public final class AuroraRenderer implements IAtmosRenderer {
+public final class AuroraRenderer extends IAtmosRenderer {
 
 	@Override
-	public void render(final EntityRenderer renderer, final float partialTick) {
+	public void render(final float partialTick, final WorldClient world, final Minecraft mc, final IRenderHandler parent) {
 		if (AuroraEffectHandler.currentAurora != null) {
 			renderAurora(partialTick, AuroraEffectHandler.currentAurora);
 		}

@@ -1,7 +1,7 @@
 /*
- * This file is part of Dynamic Surroundings, licensed under the MIT License (MIT).
+ * This file is part of Dynamic Surroundings Unofficial, licensed under the MIT License (MIT).
  *
- * Copyright (c) OreCruncher
+ * Copyright (c) OreCruncher, Abastro
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -53,20 +53,20 @@ public final class BiomeRegistry {
 	private static final TIntObjectHashMap<Entry> registry = new TIntObjectHashMap<Entry>();
 	private static final Map<String, String> biomeAliases = new HashMap<String, String>();
 
-	public static final Biome UNDERGROUND = new FakeBiome(-1, "Underground");
-	public static final Biome PLAYER = new FakeBiome(-2, "Player");
-	public static final Biome UNDERWATER = new FakeBiome(-3, "Underwater");
-	public static final Biome UNDEROCEAN = new FakeBiome(-4, "UnderOCN");
-	public static final Biome UNDERDEEPOCEAN = new FakeBiome(-5, "UnderDOCN");
-	public static final Biome UNDERRIVER = new FakeBiome(-6, "UnderRVR");
-	public static final Biome OUTERSPACE = new FakeBiome(-7, "OuterSpace");
-	public static final Biome CLOUDS = new FakeBiome(-8, "Clouds");
+	public static final FakeBiome UNDERGROUND = new FakeBiome(-1, "Underground");
+	public static final FakeBiome PLAYER = new FakeBiome(-2, "Player");
+	public static final FakeBiome UNDERWATER = new FakeBiome(-3, "Underwater");
+	public static final FakeBiome UNDEROCEAN = new FakeBiome(-4, "UnderOCN");
+	public static final FakeBiome UNDERDEEPOCEAN = new FakeBiome(-5, "UnderDOCN");
+	public static final FakeBiome UNDERRIVER = new FakeBiome(-6, "UnderRVR");
+	public static final FakeBiome OUTERSPACE = new FakeBiome(-7, "OuterSpace");
+	public static final FakeBiome CLOUDS = new FakeBiome(-8, "Clouds");
 
 	public static final SoundEffect WATER_DRIP = new SoundEffect(Module.MOD_ID + ":waterdrops");
 
 	// This is for cases when the biome coming in doesn't make sense
 	// and should default to something to avoid crap. - Wat
-	private static final Biome WTF = new FakeBiome(-256, "(FooBar)");
+	private static final FakeBiome WTF = new FakeBiome(-256, "(FooBar)");
 
 	private static class Entry {
 
@@ -87,7 +87,7 @@ public final class BiomeRegistry {
 
 		public Entry(final Biome biome) {
 			this.biome = biome;
-			this.hasPrecipitation = biome.canSpawnLightningBolt() || biome.getEnableSnow();
+			this.hasPrecipitation = biome.canRain() || biome.getEnableSnow();
 			this.sounds = new ArrayList<SoundEffect>();
 			this.spotSounds = new ArrayList<SoundEffect>();
 			this.spotSoundChance = 1200;
@@ -154,6 +154,16 @@ public final class BiomeRegistry {
 			return new StringBuilder().append('#').append(Biome.getIdForBiome(biome)).toString();
 		return biome.getBiomeName();
 	}
+	
+	private static void registerBiome(final Biome biome) {
+		registry.put(Biome.getIdForBiome(biome), new Entry(biome));
+	}
+	
+	private static int getBiomeID(final Biome biome) {
+		if(biome instanceof FakeBiome)
+			return ((FakeBiome) biome).BIOME_ID;
+		else return Biome.getIdForBiome(biome);
+	}
 
 	public static void initialize() {
 
@@ -167,22 +177,19 @@ public final class BiomeRegistry {
 
 		registry.clear();
 
-		final Biome[] biomeArray = Biome.getBiomeGenArray();
-		for (int i = 0; i < biomeArray.length; i++)
-			if (biomeArray[i] != null) {
-				registry.put(biomeArray[i].biomeID, new Entry(biomeArray[i]));
-			}
+		for (Biome biome : Biome.REGISTRY)
+			registerBiome(biome);
 
 		// Add our fake biomes
-		registry.put(UNDERGROUND.biomeID, new Entry(UNDERGROUND));
-		registry.put(UNDERWATER.biomeID, new Entry(UNDERWATER));
-		registry.put(UNDEROCEAN.biomeID, new Entry(UNDEROCEAN));
-		registry.put(UNDERDEEPOCEAN.biomeID, new Entry(UNDERDEEPOCEAN));
-		registry.put(UNDERRIVER.biomeID, new Entry(UNDERRIVER));
-		registry.put(OUTERSPACE.biomeID, new Entry(OUTERSPACE));
-		registry.put(CLOUDS.biomeID, new Entry(CLOUDS));
-		registry.put(PLAYER.biomeID, new Entry(PLAYER));
-		registry.put(WTF.biomeID, new Entry(WTF));
+		registerBiome(UNDERGROUND);
+		registerBiome(UNDERWATER);
+		registerBiome(UNDEROCEAN);
+		registerBiome(UNDERDEEPOCEAN);
+		registerBiome(UNDERRIVER);
+		registerBiome(OUTERSPACE);
+		registerBiome(CLOUDS);
+		registerBiome(PLAYER);
+		registerBiome(WTF);
 
 		processConfig();
 
@@ -199,15 +206,15 @@ public final class BiomeRegistry {
 	}
 
 	private static Entry get(final Biome biome) {
-		Entry entry = registry.get(biome == null ? WTF.biomeID : biome.biomeID);
+		Entry entry = registry.get(biome == null ? WTF.BIOME_ID : getBiomeID(biome));
 		if (entry == null) {
 			ModLog.warn("Biome [%s] was not detected during initial scan! Reloading config...", resolveName(biome));
 			initialize();
-			entry = registry.get(biome.biomeID);
+			entry = registry.get(getBiomeID(biome));
 			if (entry == null) {
 				ModLog.warn("Still can't find biome [%s]! Explicitly adding at defaults", resolveName(biome));
 				entry = new Entry(biome);
-				registry.put(biome.biomeID, entry);
+				registry.put(getBiomeID(biome), entry);
 			}
 		}
 		return entry;

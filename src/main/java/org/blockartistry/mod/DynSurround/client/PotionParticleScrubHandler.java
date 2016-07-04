@@ -24,6 +24,7 @@
 
 package org.blockartistry.mod.DynSurround.client;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -34,7 +35,7 @@ public class PotionParticleScrubHandler implements IClientEffectHandler {
 
 	@Override
 	public void process(final World world, final EntityPlayer player) {
-		player.getDataWatcher().updateObject(7, Integer.valueOf(0));
+		player.getDataManager().get(EntityLivingBase.POTION_EFFECTS).updateObject(7, Integer.valueOf(0));
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 /*
- * This file is part of Dynamic Surroundings, licensed under the MIT License (MIT).
+ * This file is part of Dynamic Surroundings Unofficial, licensed under the MIT License (MIT).
  *
- * Copyright (c) OreCruncher
+ * Copyright (c) OreCruncher, Abastro
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,6 @@
 
 package org.blockartistry.mod.DynSurround.server;
 
-import gnu.trove.map.hash.TIntIntHashMap;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-
 import java.util.List;
 import java.util.Set;
 
@@ -47,6 +38,18 @@ import org.blockartistry.mod.DynSurround.data.DimensionRegistry;
 import org.blockartistry.mod.DynSurround.network.Network;
 import org.blockartistry.mod.DynSurround.util.DiurnalUtils;
 import org.blockartistry.mod.DynSurround.util.PlayerUtils;
+import org.blockartistry.mod.DynSurround.util.WorldUtils;
+import org.blockartistry.mod.DynSurround.world.WorldProviderCloudColorHandle;
+
+import gnu.trove.map.hash.TIntIntHashMap;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 public final class ServerEffectHandler {
 
@@ -57,6 +60,20 @@ public final class ServerEffectHandler {
 
 	public static void initialize() {
 		MinecraftForge.EVENT_BUS.register(new ServerEffectHandler());
+	}
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onWorldLoad(final WorldEvent.Load e) {
+		World world = e.getWorld();
+		
+		// Tickle the Dimension Registry so it has the
+		// latest info.
+		DimensionRegistry.loading(world);
+
+		// Shim the provider.
+		if (WorldUtils.isDimensionHasSky(world.provider)) {
+			e.getWorld().provider = new WorldProviderCloudColorHandle(world, world.provider);
+		}
 	}
 
 	@SubscribeEvent

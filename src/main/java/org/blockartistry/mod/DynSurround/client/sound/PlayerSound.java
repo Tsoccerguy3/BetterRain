@@ -48,7 +48,7 @@ class PlayerSound extends MovingSound {
 	private boolean isFading;
 
 	public PlayerSound(final SoundEffect sound) {
-		super(new ResourceLocation(sound.sound));
+		super(sound.sound, SoundCategory.AMBIENT);
 
 		// Don't set volume to 0; MC will optimize out
 		this.sound = sound;

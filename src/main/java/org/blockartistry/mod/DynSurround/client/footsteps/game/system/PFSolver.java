@@ -1,7 +1,7 @@
 /*
- * This file is part of Dynamic Surroundings, licensed under the MIT License (MIT).
+ * This file is part of Dynamic Surroundings Unofficial, licensed under the MIT License (MIT).
  *
- * Copyright (c) OreCruncher
+ * Copyright (c) OreCruncher, Abastro
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,6 +41,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -92,7 +93,7 @@ public class PFSolver implements ISolver {
 		final int xx = MathHelper.floor_double(ply.posX + xn * feetDistanceToCenter);
 		final int zz = MathHelper.floor_double(ply.posZ + zn * feetDistanceToCenter);
 
-		return findAssociationForLocation(ply, xx, yy, zz);
+		return findAssociationForLocation(ply, new BlockPos(xx, yy, zz));
 	}
 
 	@Override
@@ -100,18 +101,18 @@ public class PFSolver implements ISolver {
 		final int yy = MathHelper.floor_double(ply.posY - 0.1d - ply.getYOffset() - verticalOffsetAsMinus);
 		final int xx = MathHelper.floor_double(ply.posX);
 		final int zz = MathHelper.floor_double(ply.posZ);
-		return findAssociationForLocation(ply, xx, yy, zz);
+		return findAssociationForLocation(ply, new BlockPos(xx, yy, zz));
 	}
 
 	@Override
-	public Association findAssociationForLocation(final EntityPlayer player, final int x, final int y, final int z) {
+	public Association findAssociationForLocation(final EntityPlayer player, final BlockPos pos) {
 		if (Math.abs(player.motionY) < 0.02)
 			return null; // Don't play sounds on every tiny bounce
 		if (player.isInWater())
 			ModLog.debug(
 					"WARNING!!! Playing a sound while in the water! This is supposed to be halted by the stopping conditions!!");
 
-		Association worked = findAssociationForBlock(x, y, z);
+		Association worked = findAssociationForBlock(pos);
 
 		// If it didn't work, the player has walked over the air on the border
 		// of a block.
@@ -124,8 +125,8 @@ public class PFSolver implements ISolver {
 		if (worked == null) {
 			// Create a trigo. mark contained inside the block the player is
 			// over
-			double xdang = (player.posX - x) * 2 - 1;
-			double zdang = (player.posZ - z) * 2 - 1;
+			double xdang = (player.posX - pos.getX()) * 2 - 1;
+			double zdang = (player.posZ - pos.getZ()) * 2 - 1;
 			// -1 0 1
 			// ------- -1
 			// | o |
@@ -149,9 +150,9 @@ public class PFSolver implements ISolver {
 				// Take the maximum border to produce the sound
 				if (isXdangMax) { // If we are in the positive border, add 1,
 									// else subtract 1
-					worked = findAssociationForBlock(xdang > 0 ? x + 1 : x - 1, y, z);
+					worked = findAssociationForBlock(xdang > 0 ? pos.east() : pos.west());
 				} else {
-					worked = findAssociationForBlock(x, y, zdang > 0 ? z + 1 : z - 1);
+					worked = findAssociationForBlock(zdang > 0 ? pos.up() : pos.down());
 				}
 
 				// If that didn't work, then maybe the footstep hit in the
@@ -160,9 +161,9 @@ public class PFSolver implements ISolver {
 				if (worked == null) { // Take the maximum direction and try with
 										// the orthogonal direction of it
 					if (isXdangMax) {
-						worked = findAssociationForBlock(x, y, zdang > 0 ? z + 1 : z - 1);
+						worked = findAssociationForBlock(zdang > 0 ? pos.up() : pos.down());
 					} else {
-						worked = findAssociationForBlock(xdang > 0 ? x + 1 : x - 1, y, z);
+						worked = findAssociationForBlock(xdang > 0 ? pos.east() : pos.west());
 					}
 				}
 			}
@@ -171,11 +172,11 @@ public class PFSolver implements ISolver {
 	}
 
 	@Override
-	public Association findAssociationForBlock(final int xx, int yy, final int zz) {
+	public Association findAssociationForBlock(final BlockPos immutablePos) {
 		final World world = EnvironState.getWorld();
-		BlockPos pos = new BlockPos(xx, yy, zz);
+		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(immutablePos);
 		IBlockState in = world.getBlockState(pos);
-		final IBlockState above = world.getBlockState(new BlockPos(xx, yy + 1, zz));
+		final IBlockState above = world.getBlockState(pos.up());
 
 		String association = isolator.getBlockMap().getBlockMapSubstrate(above.getBlock(),
 				above.getBlock().getMetaFromState(above), "carpet");
@@ -190,12 +191,11 @@ public class PFSolver implements ISolver {
 			// > NOT_EMITTER carpets will not cause solving to skip
 
 			if (world.isAirBlock(pos)) {
-
-				final IBlockState below = world.getBlockState(new BlockPos(xx, yy - 1, zz));
+				final IBlockState below = world.getBlockState(pos.down());
 				association = this.isolator.getBlockMap().getBlockMapSubstrate(below.getBlock(),
 						below.getBlock().getMetaFromState(below), "bigger");
 				if (association != null) {
-					yy--;
+					pos.move(EnumFacing.DOWN);
 					in = below;
 					ModLog.debug("Fence detected: " + association);
 				}
@@ -221,7 +221,7 @@ public class PFSolver implements ISolver {
 				}
 			}
 		} else {
-			yy++;
+			pos.move(EnumFacing.UP);
 			in = above;
 			ModLog.debug("Carpet detected: " + association);
 		}
@@ -236,7 +236,7 @@ public class PFSolver implements ISolver {
 			} else {
 				// PFLog.debugf("Found association for %0 : %1 : %2", in,
 				// association);
-				return (new Association(in.getBlock(), in.getBlock().getMetaFromState(in), xx, yy, zz))
+				return (new Association(in.getBlock(), in, pos))
 						.setAssociation(association);
 			}
 		} else {
@@ -250,11 +250,11 @@ public class PFSolver implements ISolver {
 
 				// PFLog.debugf("Found primitive for %0 : %1 : %2", in,
 				// primitive);
-				return (new Association(in.getBlock(), in.getBlock().getMetaFromState(in), xx, yy, zz))
+				return (new Association(in.getBlock(), in, pos))
 						.setPrimitive(primitive);
 			} else {
 				// PFLog.debugf("No association for %0 : %1", in);
-				return (new Association(in.getBlock(), in.getBlock().getMetaFromState(in), xx, yy, zz))
+				return (new Association(in.getBlock(), in, pos))
 						.setNoAssociation();
 			}
 		}
@@ -266,11 +266,13 @@ public class PFSolver implements ISolver {
 		}
 		
 		SoundType type = block.getSoundType();
-
-		String soundName = type.getName();
-		if (soundName == null || soundName.isEmpty()) {
+		String soundName;
+		boolean flag = false;
+		
+		if (type.getStepSound() == null || type.getStepSound().getSoundName().getResourcePath().isEmpty()) {
 			soundName = "UNDEFINED";
-		}
+			flag = true;
+		} else soundName = type.getStepSound().getSoundName().toString();
 
 		String substrate = String.format(Locale.ENGLISH, "%.2f_%.2f", type.getVolume(),
 				type.getPitch());
@@ -281,7 +283,7 @@ public class PFSolver implements ISolver {
 																											// in
 																											// register
 		if (primitive == null) {
-			if (block.stepSound.soundName != null) {
+			if (flag) {
 				primitive = this.isolator.getPrimitiveMap().getPrimitiveMapSubstrate(soundName, "break_" + soundName); // Check sound
 			}
 			if (primitive == null) {
@@ -321,12 +323,12 @@ public class PFSolver implements ISolver {
 	}
 
 	@Override
-	public Association findAssociationForBlock(final int xx, int yy, final int zz, String strategy) {
+	public Association findAssociationForBlock(final BlockPos pos, String strategy) {
 		if (!strategy.equals("find_messy_foliage"))
 			return null;
 
 		final World world = EnvironState.getWorld();
-		final IBlockState above = world.getBlockState(new BlockPos(xx, yy + 1, zz));
+		final IBlockState above = world.getBlockState(pos.up());
 
 		String association = null;
 		boolean found = false;

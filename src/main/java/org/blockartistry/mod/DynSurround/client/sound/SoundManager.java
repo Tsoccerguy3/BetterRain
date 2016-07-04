@@ -31,10 +31,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import org.blockartistry.mod.DynSurround.ModLog;
 import org.blockartistry.mod.DynSurround.ModOptions;
 import org.blockartistry.mod.DynSurround.client.EnvironStateHandler.EnvironState;
-import org.blockartistry.mod.DynSurround.data.SoundRegistry;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC10;
@@ -129,12 +130,12 @@ public class SoundManager {
 		}
 	}
 
-	public static void playSoundAtPlayer(EntityPlayer player, final SoundEffect sound) {
+	public static void playSoundAtPlayer(EntityPlayer player, final SoundEffect sound, @Nullable final SoundCategory categoryOverride) {
 
 		if (player == null)
 			player = EnvironState.getPlayer();
 
-		final SpotSound s = new SpotSound(player, sound);
+		final SpotSound s = new SpotSound(player, sound, categoryOverride);
 
 		if (!canFitSound())
 			pending.add(s);
@@ -142,11 +143,11 @@ public class SoundManager {
 			playSound(s);
 	}
 
-	public static void playSoundAt(final BlockPos pos, final SoundEffect sound, final int tickDelay) {
+	public static void playSoundAt(final BlockPos pos, final SoundEffect sound, final int tickDelay, @Nullable final SoundCategory categoryOverride) {
 		if (tickDelay > 0 && !canFitSound())
 			return;
 
-		final SpotSound s = new SpotSound(pos, sound, tickDelay);
+		final SpotSound s = new SpotSound(pos, sound, tickDelay, categoryOverride);
 
 		if (tickDelay > 0 || !canFitSound())
 			pending.add(s);
@@ -193,34 +194,5 @@ public class SoundManager {
 		SoundSystemConfig.setNumberNormalChannels(normalChannels);
 		SoundSystemConfig.setNumberStreamingChannels(streamChannels);
 
-	}
-
-	// Redirect hook from Minecraft's SoundManager so we can scale the volume
-	// for each individual sound.
-	public static float getNormalizedVolume(final ISound sound, final SoundPoolEntry poolEntry,
-			final SoundCategory category) {
-		float result = 0.0F;
-		if (sound == null) {
-			ModLog.warn("getNormalizedVolume(): Null sound parameter");
-		} else if (poolEntry == null) {
-			ModLog.warn("getNormalizedVolume(): Null poolEntry parameter");
-		} else if (category == null) {
-			ModLog.warn("getNormalizedVolume(): Null category parameter");
-		} else {
-			final String soundName = sound.getSoundLocation().toString();
-			try {
-				final float volumeScale = SoundRegistry.getVolumeScale(soundName);
-				result = (float) MathHelper.clamp_double((double) sound.getVolume() * poolEntry.getVolume()
-						* (double) getSoundCategoryVolume(category) * volumeScale, 0.0D, 1.0D);
-			} catch (final Throwable t) {
-				ModLog.error("getNormalizedVolume(): Unable to calculate " + soundName, t);
-			}
-		}
-		return result;
-	}
-
-	public static float getSoundCategoryVolume(final SoundCategory category) {
-		return category != null && category != SoundCategory.MASTER
-				? Minecraft.getMinecraft().gameSettings.getSoundLevel(category) : 1.0F;
 	}
 }

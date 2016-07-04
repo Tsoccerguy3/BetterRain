@@ -45,7 +45,7 @@ import net.minecraft.block.BlockRotatedPillar;
 import net.minecraft.block.BlockSlab;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.BlockTorch;
-import net.minecraft.block.SoundType;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -55,7 +55,6 @@ public class GenerateBlockReport {
 	private List<String> results;
 
 	public GenerateBlockReport() {
-		// TODO total rewrite
 		this.justNames = new ArrayList<String>();
 		this.results = new ArrayList<String>();
 
@@ -64,13 +63,13 @@ public class GenerateBlockReport {
 			String name = MCHelper.nameOf(block);
 
 			String soundName;
-			SoundType soundType = block.getSoundType();
-			if (soundType == null) {
+			SoundEvent sound = block.getSoundType().getStepSound();
+			if (sound == null) {
 				soundName = "NO_STEP";
-			} else if (soundType.soundName == null) {
+			} else if (sound.getSoundName() == null) {
 				soundName = "NO_SOUND";
 			} else {
-				soundName = soundType.soundName;
+				soundName = sound.getSoundName().toString();
 			}
 
 			if (block instanceof BlockLiquid) {

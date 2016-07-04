@@ -1,6 +1,6 @@
-/* This file is part of Dynamic Surroundings, licensed under the MIT License (MIT).
+/* This file is part of Dynamic Surroundings Unofficial, licensed under the MIT License (MIT).
  *
- * Copyright (c) OreCruncher
+ * Copyright (c) OreCruncher, Abastro
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,23 +31,26 @@ import net.minecraft.world.biome.Biome;
  * Forge.
  */
 public class FakeBiome extends Biome {
+	
+	public final int BIOME_ID;
 
 	public FakeBiome(final int biomeId, final String biomeName) {
-		super(biomeId, false);
-		this.setBiomeName(biomeName);
+		super(new Biome.BiomeProperties(biomeName).setRainDisabled());
+		BIOME_ID = biomeId;
+		
 		this.theBiomeDecorator = null;
 		this.flowers = null;
 		this.spawnableCaveCreatureList = null;
 		this.spawnableCreatureList = null;
 		this.spawnableMonsterList = null;
 		this.spawnableWaterCreatureList = null;
-		this.worldGeneratorBigTree = null;
-		this.worldGeneratorSwamp = null;
-		this.worldGeneratorTrees = null;
+		//this.worldGeneratorBigTree = null;
+		//this.worldGeneratorSwamp = null;
+		//this.worldGeneratorTrees = null;
 	}
 	
 	@Override
-	public boolean canSpawnLightningBolt() {
+	public boolean canRain() {
 		return false;
 	}
 	

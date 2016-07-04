@@ -1,4 +1,4 @@
-/* This file is part of Dynamic Surroundings, licensed under the MIT License (MIT).
+/* This file is part of Dynamic Surroundings Unoffcial, licensed under the MIT License (MIT).
  *
  * Copyright (c) OreCruncher, Abastro
  *
@@ -26,12 +26,20 @@ package org.blockartistry.mod.DynSurround.client.sound;
 import java.util.Random;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nullable;
+
 import org.apache.commons.lang3.StringUtils;
 import org.blockartistry.mod.DynSurround.data.config.SoundConfig;
 
+import com.google.common.base.Objects;
+
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public final class SoundEffect {
 
@@ -53,7 +61,7 @@ public final class SoundEffect {
 		}
 	}
 
-	public final String sound;
+	public final @Nullable SoundEvent sound;
 	public final String conditions;
 	private final Pattern pattern;
 	public final SoundType type;
@@ -64,21 +72,21 @@ public final class SoundEffect {
 	public final int repeatDelayRandom;
 	public final int repeatDelay;
 
-	public SoundEffect(final String sound) {
-		this(sound, 1.0F, 1.0F, 0, false);
+	public SoundEffect(final String soundName) {
+		this(soundName, 1.0F, 1.0F, 0, false);
 	}
 
-	public SoundEffect(final String sound, final float volume, final float pitch) {
-		this(sound, volume, pitch, 0, false);
+	public SoundEffect(final String soundName, final float volume, final float pitch) {
+		this(soundName, volume, pitch, 0, false);
 	}
 
-	public SoundEffect(final String sound, final float volume, final float pitch, final boolean variable) {
-		this(sound, volume, pitch, 0, variable);
+	public SoundEffect(final String soundName, final float volume, final float pitch, final boolean variable) {
+		this(soundName, volume, pitch, 0, variable);
 	}
 
-	public SoundEffect(final String sound, final float volume, final float pitch, final int repeatDelay,
+	public SoundEffect(final String soundName, final float volume, final float pitch, final int repeatDelay,
 			final boolean variable) {
-		this.sound = sound;
+		this.sound = this.registerSound(soundName);
 		this.volume = volume;
 		this.pitch = pitch;
 		this.conditions = ".*";
@@ -104,7 +112,7 @@ public final class SoundEffect {
 	}
 
 	public SoundEffect(final SoundConfig record) {
-		this.sound = StringUtils.isEmpty(record.sound) ? "MISSING SOUND" : record.sound;
+		this.sound = StringUtils.isEmpty(record.sound) ? null : this.registerSound(record.sound);
 		this.conditions = StringUtils.isEmpty(record.conditions) ? ".*" : record.conditions;
 		this.volume = record.volume == null ? 1.0F : record.volume.floatValue();
 		this.pitch = record.pitch == null ? 1.0F : record.pitch.floatValue();
@@ -127,6 +135,12 @@ public final class SoundEffect {
 				this.type = SoundType.BACKGROUND;
 		}
 	}
+	
+	private SoundEvent registerSound(String location) {
+		SoundEvent sound = new SoundEvent(new ResourceLocation(location));
+		GameRegistry.register(sound);
+		return sound;
+	}
 
 	public boolean matches(final String conditions) {
 		return pattern.matcher(conditions).matches();
@@ -148,8 +162,8 @@ public final class SoundEffect {
 		return this.repeatDelay + rand.nextInt(this.repeatDelayRandom);
 	}
 
-	public void doEffect(final IBlockState state, final World world, final BlockPos pos, final Random random) {
-		SoundManager.playSoundAt(pos, this, 0);
+	public void doEffect(final IBlockState state, final World world, final BlockPos pos, @Nullable final SoundCategory categoryOverride, final Random random) {
+		SoundManager.playSoundAt(pos, this, 0, categoryOverride);
 	}
 
 	@Override
@@ -159,7 +173,7 @@ public final class SoundEffect {
 		if (!(anObj instanceof SoundEffect))
 			return false;
 		final SoundEffect s = (SoundEffect) anObj;
-		return this.sound.equals(s.sound);
+		return Objects.equal(this.sound, s.sound);
 	}
 
 	@Override
@@ -175,7 +189,7 @@ public final class SoundEffect {
 
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		builder.append('[').append(this.sound);
+		builder.append('[').append(sound == null? "MISSING_SOUND" : sound.getSoundName());
 		if (!StringUtils.isEmpty(this.conditions))
 			builder.append('(').append(this.conditions).append(')');
 		builder.append(", v:").append(this.volume);
