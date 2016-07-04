@@ -27,11 +27,13 @@ package org.blockartistry.mod.DynSurround.proxy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.blockartistry.mod.DynSurround.ModLog;
 import org.blockartistry.mod.DynSurround.ModOptions;
 import org.blockartistry.mod.DynSurround.client.ClientEffectHandler;
 import org.blockartistry.mod.DynSurround.client.footsteps.game.system.ForgeDictionary;
 import org.blockartistry.mod.DynSurround.client.footsteps.game.user.GenerateBlockReport;
+import org.blockartistry.mod.DynSurround.client.fx.particle.ParticleRainOverride;
 import org.blockartistry.mod.DynSurround.client.hud.GuiHUDHandler;
 import org.blockartistry.mod.DynSurround.client.sound.SoundManager;
 import org.blockartistry.mod.DynSurround.data.BlockRegistry;
@@ -39,6 +41,7 @@ import org.blockartistry.mod.DynSurround.data.SoundRegistry;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -53,6 +56,10 @@ public class ProxyClient extends Proxy {
 		super.preInit(event);
 
 		SoundManager.configureSound();
+
+		// Particle Overrides, don't know where it should be
+		Minecraft.getMinecraft().effectRenderer.registerParticle(
+				EnumParticleTypes.WATER_DROP.getParticleID(), new ParticleRainOverride.Factory());
 	}
 
 	@Override

@@ -35,9 +35,10 @@ import org.blockartistry.mod.DynSurround.client.footsteps.engine.implem.DelayedA
 import org.blockartistry.mod.DynSurround.client.footsteps.engine.implem.EventSelectorAcoustics;
 import org.blockartistry.mod.DynSurround.client.footsteps.engine.implem.ProbabilityWeightsAcoustic;
 import org.blockartistry.mod.DynSurround.client.footsteps.engine.implem.SimultaneousAcoustic;
-import org.blockartistry.mod.DynSurround.client.footsteps.engine.interfaces.IAcoustic;
 import org.blockartistry.mod.DynSurround.client.footsteps.engine.interfaces.EventType;
+import org.blockartistry.mod.DynSurround.client.footsteps.engine.interfaces.IAcoustic;
 import org.blockartistry.mod.DynSurround.client.footsteps.engine.interfaces.ILibrary;
+import org.blockartistry.mod.DynSurround.util.SoundUtils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -224,9 +225,9 @@ public class AcousticsJsonReader {
 	
 	private void setupSoundName(final BasicAcoustic a, final String soundName) {
 		if (soundName.charAt(0) != '@') {
-			a.setSound(Module.MOD_ID + ":" + this.soundRoot + soundName);
+			a.setSound(SoundUtils.getOrRegisterSound(Module.MOD_ID + ":" + this.soundRoot + soundName));
 		} else {
-			a.setSound(soundName.replace("@", ""));
+			a.setSound(SoundUtils.getOrRegisterSound(soundName.replace("@", "")));
 		}
 	}
 	

@@ -1,7 +1,7 @@
 /*
- * This file is part of Dynamic Surroundings, licensed under the MIT License (MIT).
+ * This file is part of Dynamic Surroundings Unofficial, licensed under the MIT License (MIT).
  *
- * Copyright (c) OreCruncher
+ * Copyright (c) Abastro
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,25 +22,25 @@
  * THE SOFTWARE.
  */
 
-package org.blockartistry.mod.DynSurround.client;
+package org.blockartistry.mod.DynSurround.util;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
-@SideOnly(Side.CLIENT)
-public class PotionParticleScrubHandler implements IClientEffectHandler {
-
-	@Override
-	public void process(final World world, final EntityPlayer player) {
-		player.getDataManager().set(EntityLivingBase.HIDE_PARTICLES, true);
+public class SoundUtils {
+	
+	public static SoundEvent getOrRegisterSound(final String location) {
+		return getOrRegisterSound(new ResourceLocation(location));
 	}
+	
+	public static SoundEvent getOrRegisterSound(final ResourceLocation location) {
+		if(SoundEvent.REGISTRY.containsKey(location))
+			return SoundEvent.REGISTRY.getObject(location);
 
-	@Override
-	public boolean hasEvents() {
-		return false;
+		SoundEvent sound = new SoundEvent(location);
+		GameRegistry.register(sound);
+		return sound;
 	}
 
 }

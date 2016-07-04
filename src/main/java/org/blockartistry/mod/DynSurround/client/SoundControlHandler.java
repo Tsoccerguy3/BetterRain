@@ -111,7 +111,14 @@ public class SoundControlHandler implements IClientEffectHandler {
 		} else {
 			this.soundCull.put(resource, currentTick);
 		}
-		
+	}
+	
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void soundEventLast(final PlaySoundEvent event) {
+		if (event.getSound() == null)
+			return;
+
+		final String resource = event.getSound().getSoundLocation().toString();
 		if(SoundRegistry.hasCustomVolumeScale(resource))
 			event.setResultSound(new SoundShim(event.getSound(), SoundRegistry.getCustomVolumeScale(resource)));
 	}

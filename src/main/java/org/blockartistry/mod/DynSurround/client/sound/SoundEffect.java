@@ -30,16 +30,15 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
 import org.blockartistry.mod.DynSurround.data.config.SoundConfig;
+import org.blockartistry.mod.DynSurround.util.SoundUtils;
 
 import com.google.common.base.Objects;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public final class SoundEffect {
 
@@ -86,7 +85,7 @@ public final class SoundEffect {
 
 	public SoundEffect(final String soundName, final float volume, final float pitch, final int repeatDelay,
 			final boolean variable) {
-		this.sound = this.registerSound(soundName);
+		this.sound = SoundUtils.getOrRegisterSound(soundName);
 		this.volume = volume;
 		this.pitch = pitch;
 		this.conditions = ".*";
@@ -112,7 +111,7 @@ public final class SoundEffect {
 	}
 
 	public SoundEffect(final SoundConfig record) {
-		this.sound = StringUtils.isEmpty(record.sound) ? null : this.registerSound(record.sound);
+		this.sound = StringUtils.isEmpty(record.sound) ? null : SoundUtils.getOrRegisterSound(record.sound);
 		this.conditions = StringUtils.isEmpty(record.conditions) ? ".*" : record.conditions;
 		this.volume = record.volume == null ? 1.0F : record.volume.floatValue();
 		this.pitch = record.pitch == null ? 1.0F : record.pitch.floatValue();
@@ -134,12 +133,6 @@ public final class SoundEffect {
 			else
 				this.type = SoundType.BACKGROUND;
 		}
-	}
-	
-	private SoundEvent registerSound(String location) {
-		SoundEvent sound = new SoundEvent(new ResourceLocation(location));
-		GameRegistry.register(sound);
-		return sound;
 	}
 
 	public boolean matches(final String conditions) {

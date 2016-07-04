@@ -42,6 +42,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.particle.ParticleDrip;
+import net.minecraft.client.particle.ParticleRain;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -58,7 +59,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class PlayerSoundEffectHandler implements IClientEffectHandler {
 
-	private static final List<ParticleDrip> drops = new ArrayList<ParticleDrip>();
+	private static final List<ParticleRain> drops = new ArrayList<ParticleRain>();
 
 	private static boolean doBiomeSounds() {
 		return EnvironState.isPlayerUnderground() || !EnvironState.isPlayerInside();
@@ -119,8 +120,6 @@ public class PlayerSoundEffectHandler implements IClientEffectHandler {
 		if (sound != null)
 			SoundManager.playSoundAtPlayer(player, sound, SoundCategory.AMBIENT);
 
-		processWaterDrops();
-
 		SoundManager.update();
 	}
 
@@ -155,47 +154,6 @@ public class PlayerSoundEffectHandler implements IClientEffectHandler {
 		for (final String sound : SoundManager.getSounds()) {
 			event.output.add(sound);
 		}
-	}
-
-	@SubscribeEvent
-	public void entityCreateEvent(final EntityConstructing event) {
-		// TODO particle processing - water drops & is it ParticleDrip?
-		if (event.getEntity() instanceof EntityDropParticleFX) {
-			drops.add((EntityDropParticleFX) event.getEntity());
-		}
-	}
-
-	private static void processWaterDrops() {
-		if (drops.isEmpty())
-			return;
-
-		final World world = EnvironState.getWorld();
-		final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-		for (final ParticleDrip drop : drops) {
-			if (drop.isAlive()) {
-				if (drop.posY < 1)
-					continue;
-				final int x = MathHelper.floor_double(drop.posX);
-				final int y = MathHelper.floor_double(drop.posY + 0.3D);
-				final int z = MathHelper.floor_double(drop.posZ);
-				pos.setPos(x, y, z);
-				IBlockState state = world.getBlockState(pos);
-				Block block = world.getBlockState(pos).getBlock();
-				if (!block.isAir(state, world, pos) && !block.isLeaves(state, world, pos)) {
-					// Find out where it is going to hit
-					BlockPos soundPos = pos.down();
-					while (soundPos.getY() > 0 && world.isAirBlock(soundPos))
-						soundPos = soundPos.down();
-
-					if (soundPos.getY() > 0 && state.getMaterial().isSolid()) {
-						final int distance = y - soundPos.getY();
-						SoundManager.playSoundAt(soundPos.up(), BiomeRegistry.WATER_DRIP, 40 + distance * 2);
-					}
-				}
-			}
-		}
-
-		drops.clear();
 	}
 
 	/*
