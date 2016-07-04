@@ -31,17 +31,21 @@ import org.blockartistry.mod.DynSurround.client.WeatherUtils;
 import org.blockartistry.mod.DynSurround.client.fx.particle.ParticleFactory;
 import org.blockartistry.mod.DynSurround.data.BiomeRegistry;
 import org.blockartistry.mod.DynSurround.data.DimensionRegistry;
-import org.blockartistry.mod.DynSurround.util.DiurnalUtils;
 import org.blockartistry.mod.DynSurround.util.XorShiftRandom;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -86,30 +90,32 @@ public class StormSplashRenderer {
 						0.0F, 1.0F);
 	}
 
-	protected EntityFX getBlockParticleFX(final Block block, final boolean dust, final World world, final double x,
+	protected Particle getBlockParticle(final IBlockState state, final boolean dust, final World world, final double x,
 			final double y, final double z) {
 		IParticleFactory factory = null;
 
+		Block block = state.getBlock();
+
 		if (dust) {
 			factory = null;
-		} else if (block == Blocks.soul_sand) {
+		} else if (block == Blocks.SOUL_SAND) {
 			factory = null;
-		} else if (block == Blocks.netherrack && RANDOM.nextInt(20) == 0) {
+		} else if (block == Blocks.NETHERRACK && RANDOM.nextInt(20) == 0) {
 			factory = ParticleFactory.lavaSpark;
-		} else if (block.getMaterial() == Material.lava) {
+		} else if (state.getMaterial() == Material.LAVA) {
 			factory = ParticleFactory.smoke;
-		} else if (block.getMaterial() != Material.air) {
+		} else if (state.getMaterial() != Material.AIR) {
 			factory = ParticleFactory.rain;
 		}
 
 		return factory != null ? factory.getEntityFX(0, world, x, y, z, 0, 0, 0) : null;
 	}
 
-	protected String getBlockSoundFX(final Block block, final boolean hasDust, final World world) {
+	protected SoundEvent getBlockSound(final Block block, final boolean hasDust, final World world) {
 		if (hasDust)
 			return StormProperties.getIntensity().getDustSound();
-		if (block == Blocks.netherrack)
-			return "minecraft:liquid.lavapop";
+		if (block == Blocks.NETHERRACK)
+			return SoundEvents.BLOCK_LAVA_POP;
 		return StormProperties.getIntensity().getStormSound();
 	}
 
@@ -124,10 +130,10 @@ public class StormSplashRenderer {
 		final int theZ = MathHelper.floor_double(z);
 
 		final BlockPos coord = new BlockPos(theX, theY, theZ);
-		final boolean hasDust = WeatherUtils.biomeHasDust(world.getBiomeGenForCoords(coord));
+		final boolean hasDust = WeatherUtils.biomeHasDust(world.getBiome(coord));
 		final Block block = world.getBlockState(coord.down()).getBlock();
-		final String sound = getBlockSoundFX(block, hasDust, world);
-		if (!StringUtils.isEmpty(sound)) {
+		final SoundEvent sound = getBlockSound(block, hasDust, world);
+		if (sound != null) {
 			final float volume = calculateRainSoundVolume(world);
 			float pitch = 1.0F;
 			final int playerX = MathHelper.floor_double(player.posX);
@@ -136,7 +142,7 @@ public class StormSplashRenderer {
 			if (y > player.posY + 1.0D
 					&& world.getPrecipitationHeight(new BlockPos(playerX, 0, playerZ)).getY() > playerY)
 				pitch = 0.5F;
-			renderer.mc.theWorld.playSound(x, y, z, sound, volume, pitch, false);
+			renderer.mc.theWorld.playSound(coord, sound, SoundCategory.WEATHER, volume, pitch, false);
 		}
 	}
 
@@ -182,12 +188,14 @@ public class StormSplashRenderer {
 			if (precipHeight.getY() <= playerY + RANGE && precipHeight.getY() >= playerY - RANGE && (hasDust
 					|| (BiomeRegistry.hasPrecipitation(biome) && biome.getFloatTemperature(precipHeight) >= 0.15F))) {
 
-				final Block block = worldclient.getBlockState(precipHeight.down()).getBlock();
+				final BlockPos pos = precipHeight.down();
+				final IBlockState state = worldclient.getBlockState(precipHeight.down());
+				final Block block = state.getBlock();
 				final double posX = locX + RANDOM.nextFloat();
-				final double posY = precipHeight.getY() + 0.1F - block.getBlockBoundsMinY();
+				final double posY = precipHeight.getY() + 0.1F - state.getBoundingBox(worldclient, pos).minY;
 				final double posZ = locZ + RANDOM.nextFloat();
 
-				final EntityFX particle = getBlockParticleFX(block, hasDust, worldclient, posX, posY, posZ);
+				final Particle particle = getBlockParticle(state, hasDust, worldclient, posX, posY, posZ);
 				if (particle != null)
 					theThis.mc.effectRenderer.addEffect(particle);
 

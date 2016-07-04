@@ -1,6 +1,6 @@
 /* This file is part of Dynamic Surroundings, licensed under the MIT License (MIT).
  *
- * Copyright (c) OreCruncher
+ * Copyright (c) OreCruncher, Abastro
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.blockartistry.mod.DynSurround.data.config.SoundConfig;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -148,7 +148,7 @@ public final class SoundEffect {
 		return this.repeatDelay + rand.nextInt(this.repeatDelayRandom);
 	}
 
-	public void doEffect(final Block block, final World world, final BlockPos pos, final Random random) {
+	public void doEffect(final IBlockState state, final World world, final BlockPos pos, final Random random) {
 		SoundManager.playSoundAt(pos, this, 0);
 	}
 

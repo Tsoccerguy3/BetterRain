@@ -24,41 +24,26 @@
 
 package org.blockartistry.mod.DynSurround.client.fx.particle;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.particle.EntityBlockDustFX;
-import net.minecraft.client.particle.EntityFX;
+import org.blockartistry.mod.DynSurround.util.Color;
+import org.blockartistry.mod.DynSurround.util.XorShiftRandom;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
 
 @SideOnly(Side.CLIENT)
-public class EntityFountainJetFX extends EntityJetFX {
+public class ParticleCriticalPopOff extends ParticleTextPopOff {
 
-	protected static final class EntityFoundtainParitcleFX extends EntityBlockDustFX {
+	private static final String[] POWER_WORDS = new String[] { "BAM", "BANG", "BONK", "CRRACK", "CRASH", "KRUNCH",
+			"OOOOFF", "POWIE", "SPLATT", "THUNK", "TWAPE", "WHAMMM", "ZAP" };
 
-		public EntityFoundtainParitcleFX(final World world, final double x, final double y, final double z,
-				final double dX, final double dY, final double dZ, final IBlockState block) {
-			super(world, x + RANDOM.nextGaussian() * 0.2D, y, z + RANDOM.nextGaussian() * 0.2D, dX, dY, dZ, block);
-			this.multipleParticleScaleBy((float) (0.3F + RANDOM.nextGaussian() / 10.0F));
-			this.setPosition(this.posX, this.posY, this.posZ);
-		}
-
+	private static String getPowerWord() {
+		return POWER_WORDS[XorShiftRandom.shared.nextInt(POWER_WORDS.length)];
 	}
 
-	protected final IBlockState block;
-
-	public EntityFountainJetFX(final int strength, final World world, final double x, final double y, final double z,
-			final IBlockState block) {
-		super(strength, world, x, y, z, 1);
-		this.block = block;
+	public ParticleCriticalPopOff(final World world, final double x, final double y, final double z) {
+		super(world, getPowerWord(), Color.ORANGE, 1.0F, x, y, z, 0.001D, 0.05D * BOUNCE_STRENGTH, 0.001D);
+		this.shouldOnTop = true;
+		this.particleGravity = -0.04F;
+		this.scale = 0.5F;
 	}
-
-	@Override
-	protected EntityFX getJetParticle() {
-		final double motionX = RANDOM.nextGaussian() * 0.03D;
-		final double motionZ = RANDOM.nextGaussian() * 0.03D;
-		return new EntityFoundtainParitcleFX(this.worldObj, this.posX, this.posY, this.posZ, motionX, 0.5D, motionZ,
-				this.block).func_174845_l();
-	}
-
 }

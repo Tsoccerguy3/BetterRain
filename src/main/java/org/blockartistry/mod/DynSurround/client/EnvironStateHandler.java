@@ -52,11 +52,11 @@ import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
-import net.minecraft.potion.Potion;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -393,7 +393,7 @@ public class EnvironStateHandler implements IClientEffectHandler {
 			return;
 
 		if (event.getEntityPlayer().worldObj.isRemote && EnvironState.isPlayer(event.getEntityPlayer())) {
-			final ItemStack currentItem = event.getEntityPlayer().getCurrentEquippedItem();
+			final ItemStack currentItem = event.getEntityPlayer().getHeldItemMainhand();
 			if (currentItem != null) {
 				SoundEffect sound = null;
 				final Item item = currentItem.getItem();
@@ -425,12 +425,12 @@ public class EnvironStateHandler implements IClientEffectHandler {
 	}
 
 	@SubscribeEvent
-	public void onItemUse(final PlayerUseItemEvent.Start event) {
-		if (BOW_PULL == null || event.entityPlayer == null || event.entityPlayer.worldObj == null || event.item == null
-				|| event.item.getItem() == null)
+	public void onItemUse(final LivingEntityUseItemEvent.Start event) {
+		if (BOW_PULL == null || event.getEntityLiving() == null || event.getEntityLiving().worldObj == null || event.getItem() == null
+				|| event.getItem().getItem() == null)
 			return;
 
-		if (event.entityPlayer.worldObj.isRemote && event.item.getItem() instanceof ItemBow) {
+		if (event.getEntityLiving().worldObj.isRemote && event.getItem().getItem() instanceof ItemBow) {
 			SoundManager.playSoundAtPlayer(EnvironState.getPlayer(), BOW_PULL);
 		}
 	}

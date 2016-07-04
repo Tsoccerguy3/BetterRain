@@ -36,6 +36,7 @@ import org.blockartistry.mod.DynSurround.client.footsteps.mcpackage.interfaces.I
 import org.blockartistry.mod.DynSurround.util.MathStuff;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -84,7 +85,7 @@ public class PFSolver implements ISolver {
 	public Association findAssociationForPlayer(final EntityPlayer ply, final double verticalOffsetAsMinus,
 			final boolean isRightFoot) {
 		final int yy = MathHelper.floor_double(ply.getEntityBoundingBox().minY - 0.1d - verticalOffsetAsMinus);
-		final double rot = MathStuff.toRadians(MathHelper.wrapAngleTo180_float(ply.rotationYaw));
+		final double rot = MathStuff.toRadians(MathHelper.wrapDegrees(ply.rotationYaw));
 		final double xn = MathStuff.cos(rot);
 		final double zn = MathStuff.sin(rot);
 		final float feetDistanceToCenter = 0.2f * (isRightFoot ? -1 : 1);
@@ -260,17 +261,19 @@ public class PFSolver implements ISolver {
 	}
 
 	private String resolvePrimitive(final Block block) {
-		if (block == Blocks.air || block.stepSound == null) {
+		if (block == Blocks.AIR || block.getSoundType() == null) {
 			return "NOT_EMITTER"; // air block
 		}
+		
+		SoundType type = block.getSoundType();
 
-		String soundName = block.stepSound.soundName;
+		String soundName = type.getName();
 		if (soundName == null || soundName.isEmpty()) {
 			soundName = "UNDEFINED";
 		}
 
-		String substrate = String.format(Locale.ENGLISH, "%.2f_%.2f", block.stepSound.volume,
-				block.stepSound.frequency);
+		String substrate = String.format(Locale.ENGLISH, "%.2f_%.2f", type.getVolume(),
+				type.getPitch());
 
 		String primitive = this.isolator.getPrimitiveMap().getPrimitiveMapSubstrate(soundName, substrate); // Check
 																											// for
@@ -279,10 +282,7 @@ public class PFSolver implements ISolver {
 																											// register
 		if (primitive == null) {
 			if (block.stepSound.soundName != null) {
-				primitive = this.isolator.getPrimitiveMap().getPrimitiveMapSubstrate(soundName, "break_" + soundName); // Check
-																														// for
-																														// break
-																														// sound
+				primitive = this.isolator.getPrimitiveMap().getPrimitiveMapSubstrate(soundName, "break_" + soundName); // Check sound
 			}
 			if (primitive == null) {
 				primitive = this.isolator.getPrimitiveMap().getPrimitiveMap(soundName);
@@ -326,19 +326,6 @@ public class PFSolver implements ISolver {
 			return null;
 
 		final World world = EnvironState.getWorld();
-
-		/*
-		 * Block block = PF172Helper.getBlockAt(xx, yy, zz); int metadata =
-		 * world.getBlockMetadata(xx, yy, zz); // air block if (block ==
-		 * Blocks.field_150350_a) { //int mm = world.blockGetRenderType(xx, yy -
-		 * 1, zz); // see Entity, line 885 int mm = PF172Helper.getBlockAt(xx,
-		 * yy - 1, zz).func_149645_b();
-		 * 
-		 * if (mm == 11 || mm == 32 || mm == 21) { block =
-		 * PF172Helper.getBlockAt(xx, yy - 1, zz); metadata =
-		 * world.getBlockMetadata(xx, yy - 1, zz); } }
-		 */
-
 		final IBlockState above = world.getBlockState(new BlockPos(xx, yy + 1, zz));
 
 		String association = null;

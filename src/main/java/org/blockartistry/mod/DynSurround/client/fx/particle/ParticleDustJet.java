@@ -24,19 +24,19 @@
 
 package org.blockartistry.mod.DynSurround.client.fx.particle;
 
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.particle.EntityBlockDustFX;
-import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleBlockDust;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class EntityDustJetFX extends EntityJetFX {
+public class ParticleDustJet extends ParticleJet {
 
-	protected static final class EntityDustFX extends EntityBlockDustFX {
+	protected static final class ParticleDust extends ParticleBlockDust {
 
-		public EntityDustFX(final World world, final double x, final double y, final double z,
+		public ParticleDust(final World world, final double x, final double y, final double z,
 				final IBlockState block) {
 			super(world, x + RANDOM.nextGaussian() * 0.2D, y, z + RANDOM.nextGaussian() * 0.2D, 0, 0, 0, block);
 			this.multipleParticleScaleBy((float) (0.3F + RANDOM.nextGaussian() / 30.0F));
@@ -47,15 +47,15 @@ public class EntityDustJetFX extends EntityJetFX {
 
 	protected final IBlockState blockState;
 
-	public EntityDustJetFX(final int strength, final World world, final double x, final double y, final double z,
+	public ParticleDustJet(final int strength, final World world, final double x, final double y, final double z,
 			final IBlockState state) {
 		super(strength, world, x, y, z, 2);
 		this.blockState = state;
 	}
 
 	@Override
-	protected EntityFX getJetParticle() {
-		return new EntityDustFX(this.worldObj, this.posX, this.posY, this.posZ, this.blockState).func_174845_l();
+	protected Particle getJetParticle() {
+		return new ParticleDust(this.worldObj, this.posX, this.posY, this.posZ, this.blockState).init();
 	}
 
 }

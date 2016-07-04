@@ -1,7 +1,7 @@
 /*
- * This file is part of Dynamic Surroundings, licensed under the MIT License (MIT).
+ * This file is part of Dynamic Surroundings Unofficial, licensed under the MIT License (MIT).
  *
- * Copyright (c) OreCruncher
+ * Copyright (c) OreCruncher, Abastro
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +26,8 @@ package org.blockartistry.mod.DynSurround.compat;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.FMLControlledNamespacedRegistry;
 import net.minecraftforge.fml.common.registry.GameData;
@@ -38,7 +38,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class MCHelper {
 
 	public static String nameOf(final Block block) {
-		return Block.blockRegistry.getNameForObject(block).toString();
+		return Block.REGISTRY.getNameForObject(block).toString();
 	}
 
 	public static Block getBlockNameRaw(final String blockName) {
@@ -62,8 +62,13 @@ public class MCHelper {
 		return world.isAirBlock(pos);
 	}
 	
+	public static boolean isAirBlock(final IBlockState state, final World world, final BlockPos pos) {
+		return state.getBlock().isAir(state, world, pos);
+	}
+	
 	public static boolean isLeafBlock(final World world, final BlockPos pos) {
-		return getBlock(world, pos).isLeaves(world, pos);
+		IBlockState state = world.getBlockState(pos);
+		return state.getBlock().isLeaves(state, world, pos);
 	}
 
 }

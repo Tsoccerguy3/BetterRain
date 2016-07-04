@@ -24,17 +24,17 @@
 
 package org.blockartistry.mod.DynSurround.client.fx.particle;
 
-import net.minecraft.client.particle.EntityCloudFX;
-import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleCloud;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class EntitySteamJetFX extends EntityJetFX {
+public class ParticleSteamJet extends ParticleJet {
 
-	protected static final class EntitySteamCloudFX extends EntityCloudFX {
-		public EntitySteamCloudFX(final World world, final double x, final double y, final double z, final double dX,
+	protected static final class ParticleSteamCloud extends ParticleCloud {
+		public ParticleSteamCloud(final World world, final double x, final double y, final double z, final double dX,
 				final double dY, final double dZ) {
 			super(world, x, y, z, dX, dY, dZ);
 		}
@@ -46,7 +46,7 @@ public class EntitySteamJetFX extends EntityJetFX {
 			this.prevPosZ = this.posZ;
 
 			if (this.particleAge++ >= this.particleMaxAge) {
-				this.setDead();
+				this.setExpired();
 			}
 
 			this.setParticleTextureIndex(7 - this.particleAge * 8 / this.particleMaxAge);
@@ -55,22 +55,22 @@ public class EntitySteamJetFX extends EntityJetFX {
 			this.motionY *= 0.9599999785423279D;
 			this.motionZ *= 0.9599999785423279D;
 
-			if (this.onGround) {
+			if (this.isCollided) {
 				this.motionX *= 0.699999988079071D;
 				this.motionZ *= 0.699999988079071D;
 			}
 		}
 	}
 
-	public EntitySteamJetFX(final int strength, final World world, final double x, final double y, final double z) {
+	public ParticleSteamJet(final int strength, final World world, final double x, final double y, final double z) {
 		super(strength, world, x, y, z);
 	}
 
 	@Override
-	protected EntityFX getJetParticle() {
+	protected Particle getJetParticle() {
 		final double motionX = RANDOM.nextGaussian() * 0.02D;
 		final double motionZ = RANDOM.nextGaussian() * 0.02D;
-		return new EntitySteamCloudFX(this.worldObj, this.posX, this.posY, this.posZ, motionX, 0.1F, motionZ);
+		return new ParticleSteamCloud(this.worldObj, this.posX, this.posY, this.posZ, motionX, 0.1F, motionZ);
 	}
 
 }

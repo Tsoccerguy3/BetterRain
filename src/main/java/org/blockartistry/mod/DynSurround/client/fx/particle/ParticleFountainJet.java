@@ -24,26 +24,41 @@
 
 package org.blockartistry.mod.DynSurround.client.fx.particle;
 
-import org.blockartistry.mod.DynSurround.util.Color;
-import org.blockartistry.mod.DynSurround.util.XorShiftRandom;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleBlockDust;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class EntityCriticalPopOffFX extends EntityTextPopOffFX {
+public class ParticleFountainJet extends ParticleJet {
 
-	private static final String[] POWER_WORDS = new String[] { "BAM", "BANG", "BONK", "CRRACK", "CRASH", "KRUNCH",
-			"OOOOFF", "POWIE", "SPLATT", "THUNK", "TWAPE", "WHAMMM", "ZAP" };
+	protected static final class ParticleFoundtain extends ParticleBlockDust {
 
-	private static String getPowerWord() {
-		return POWER_WORDS[XorShiftRandom.shared.nextInt(POWER_WORDS.length)];
+		public ParticleFoundtain(final World world, final double x, final double y, final double z,
+				final double dX, final double dY, final double dZ, final IBlockState block) {
+			super(world, x + RANDOM.nextGaussian() * 0.2D, y, z + RANDOM.nextGaussian() * 0.2D, dX, dY, dZ, block);
+			this.multipleParticleScaleBy((float) (0.3F + RANDOM.nextGaussian() / 10.0F));
+			this.setPosition(this.posX, this.posY, this.posZ);
+		}
+
 	}
 
-	public EntityCriticalPopOffFX(final World world, final double x, final double y, final double z) {
-		super(world, getPowerWord(), Color.ORANGE, 1.0F, x, y, z, 0.001D, 0.05D * BOUNCE_STRENGTH, 0.001D);
-		this.shouldOnTop = true;
-		this.particleGravity = -0.04F;
-		this.scale = 0.5F;
+	protected final IBlockState block;
+
+	public ParticleFountainJet(final int strength, final World world, final double x, final double y, final double z,
+			final IBlockState block) {
+		super(strength, world, x, y, z, 1);
+		this.block = block;
 	}
+
+	@Override
+	protected Particle getJetParticle() {
+		final double motionX = RANDOM.nextGaussian() * 0.03D;
+		final double motionZ = RANDOM.nextGaussian() * 0.03D;
+		return new ParticleFoundtain(this.worldObj, this.posX, this.posY, this.posZ, motionX, 0.5D, motionZ,
+				this.block).init();
+	}
+
 }

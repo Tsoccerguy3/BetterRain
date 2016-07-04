@@ -267,8 +267,6 @@ public class PFReaderH implements IGenerator, IVariatorSettable {
 		if ((ply.motionX == 0d && ply.motionZ == 0d) || ply.isSneaking())
 			return;
 
-		// if (true || ply.onGround || ply.isOnLadder())
-		// {
 		final int yy = MathHelper.floor_double(ply.posY - 0.1d - ply.getYOffset() - (ply.onGround ? 0d : 0.25d));
 		final Association assos = mod.getSolver().findAssociationForBlock(MathHelper.floor_double(ply.posX), yy,
 				MathHelper.floor_double(ply.posZ), "find_messy_foliage");
@@ -282,10 +280,7 @@ public class PFReaderH implements IGenerator, IVariatorSettable {
 				this.isMessyFoliage = false;
 			}
 		}
-		// }
 	}
-
-	//
 
 	protected void playSinglefoot(final EntityPlayer ply, final double verticalOffsetAsMinus, final EventType eventType,
 			final boolean foot) {

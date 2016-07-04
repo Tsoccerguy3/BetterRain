@@ -24,27 +24,28 @@
 
 package org.blockartistry.mod.DynSurround.client.fx.particle;
 
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.fml.relauncher.Side;
-
 import org.blockartistry.mod.DynSurround.client.sound.SoundEffect;
 import org.blockartistry.mod.DynSurround.client.sound.SoundManager;
 
-import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.particle.EntityFlameFX;
-import net.minecraft.client.particle.EntityLavaFX;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleFlame;
+import net.minecraft.client.particle.ParticleLava;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class EntityFireJetFX extends EntityJetFX {
+public class ParticleFireJet extends ParticleJet {
 
 	private static final SoundEffect FIRE = new SoundEffect("minecraft:fire.fire");
-
+	
 	protected final boolean isLava;
 
-	public EntityFireJetFX(final int strength, final World world, final double x, final double y, final double z) {
+	public ParticleFireJet(final int strength, final World world, final double x, final double y, final double z) {
 		super(strength, world, x, y, z);
 		this.isLava = RANDOM.nextInt(3) == 0;
 	}
@@ -58,13 +59,13 @@ public class EntityFireJetFX extends EntityJetFX {
 	}
 
 	@Override
-	protected EntityFX getJetParticle() {
+	protected Particle getJetParticle() {
 		if (this.isLava) {
-			return new EntityLavaFX.Factory().getEntityFX(0, this.worldObj, this.posX, this.posY, this.posZ, 0, 0, 0);
+			return new ParticleLava.Factory().getEntityFX(0, this.worldObj, this.posX, this.posY, this.posZ, 0, 0, 0);
 		}
-		final EntityFlameFX flame = (EntityFlameFX) new EntityFlameFX.Factory().getEntityFX(0, this.worldObj, this.posX,
+		final ParticleFlame flame = (ParticleFlame) new ParticleFlame.Factory().getEntityFX(0, this.worldObj, this.posX,
 				this.posY, this.posZ, 0.0D, this.jetStrength / 10.0D, 0.0D);
-		flame.flameScale *= this.jetStrength;
+		flame.flameScale *= this.jetStrength;// TODO AT
 		return flame;
 	}
 }

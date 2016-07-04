@@ -1,7 +1,7 @@
 /*
- * This file is part of Dynamic Surroundings, licensed under the MIT License (MIT).
+ * This file is part of Dynamic Surroundings Unofficial, licensed under the MIT License (MIT).
  *
- * Copyright (c) OreCruncher
+ * Copyright (c) OreCruncher, Abastro
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,9 +36,9 @@ import org.blockartistry.mod.DynSurround.data.BlockRegistry;
 import org.blockartistry.mod.DynSurround.util.XorShiftRandom;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -66,28 +66,30 @@ public class BlockEffectHandler implements IClientEffectHandler {
 		for (int i = 0; i < CHECK_COUNT; i++) {
 			final BlockPos pos = playerPos.add(random.nextInt(RANGE) - random.nextInt(RANGE),
 					random.nextInt(RANGE) - random.nextInt(RANGE), random.nextInt(RANGE) - random.nextInt(RANGE));
+			final IBlockState state = world.getBlockState(pos);
 			final Block block = MCHelper.getBlock(world, pos);
-			if (world.isAirBlock(pos)) {
+			if (!MCHelper.isAirBlock(state, world, pos)) {
 				final List<BlockEffect> chain = BlockRegistry.getEffects(block);
 				if (chain != null) {
 					for (final BlockEffect effect : chain)
-						if (effect.trigger(block, world, pos, random))
-							effect.doEffect(block, world, pos, random);
+						if (effect.trigger(state, world, pos, random))
+							effect.doEffect(state, world, pos, random);
 				}
 
 				final SoundEffect sound = BlockRegistry.getSound(block, random, conditions);
 				if (sound != null)
-					sound.doEffect(block, world, pos, random);
+					sound.doEffect(state, world, pos, random);
 			}
 		}
 
 		if (EnvironState.isPlayerOnGround() && EnvironState.isPlayerMoving()) {
 			final BlockPos pos = playerPos.down(1);
+			final IBlockState state = world.getBlockState(pos);
 			final Block block = MCHelper.getBlock(world, pos);
-			if (block != Blocks.air && !block.getMaterial().isLiquid()) {
+			if (!MCHelper.isAirBlock(state, world, pos) && !state.getMaterial().isLiquid()) {
 				final SoundEffect sound = BlockRegistry.getStepSound(block, random, conditions);
 				if (sound != null)
-					sound.doEffect(block, world, pos, random);
+					sound.doEffect(state, world, pos, random);
 			}
 		}
 	}

@@ -198,7 +198,7 @@ public final class BlockRegistry {
 
 			for (final String blockName : entry.blocks) {
 				final Block block = GameData.getBlockRegistry().getObject(new ResourceLocation(blockName));
-				if (block == null || block == Blocks.air) {
+				if (block == null || block == Blocks.AIR) {
 					ModLog.warn("Unknown block [%s] in block config file", blockName);
 					continue;
 				}

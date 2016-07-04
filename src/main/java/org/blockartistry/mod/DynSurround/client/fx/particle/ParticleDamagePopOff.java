@@ -28,9 +28,9 @@ import org.blockartistry.mod.DynSurround.util.Color;
 
 import net.minecraft.world.World;
 
-public class EntityHealPopOffFX extends EntityTextPopOffFX {
+public class ParticleDamagePopOff extends ParticleTextPopOff {
 
-	public EntityHealPopOffFX(final World world, final double x, final double y, final double z, final int amount) {
-		super(world, String.valueOf(amount), Color.GREEN, 1.0F, x, y, z, 0.001D, 0.05D * BOUNCE_STRENGTH, 0.001D);
+	public ParticleDamagePopOff(final World world, final double x, final double y, final double z, final int amount) {
+		super(world, String.valueOf(amount), Color.RED, 1.0F, x, y, z, 0.001D, 0.05D * BOUNCE_STRENGTH, 0.001D);
 	}
 }

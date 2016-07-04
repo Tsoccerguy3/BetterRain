@@ -41,8 +41,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.particle.ParticleDrip;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -57,7 +58,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class PlayerSoundEffectHandler implements IClientEffectHandler {
 
-	private static final List<EntityDropParticleFX> drops = new ArrayList<EntityDropParticleFX>();
+	private static final List<ParticleDrip> drops = new ArrayList<ParticleDrip>();
 
 	private static boolean doBiomeSounds() {
 		return EnvironState.isPlayerUnderground() || !EnvironState.isPlayerInside();
@@ -158,6 +159,7 @@ public class PlayerSoundEffectHandler implements IClientEffectHandler {
 
 	@SubscribeEvent
 	public void entityCreateEvent(final EntityConstructing event) {
+		// TODO particle processing - water drops & is it ParticleDrip?
 		if (event.getEntity() instanceof EntityDropParticleFX) {
 			drops.add((EntityDropParticleFX) event.getEntity());
 		}
@@ -169,8 +171,8 @@ public class PlayerSoundEffectHandler implements IClientEffectHandler {
 
 		final World world = EnvironState.getWorld();
 		final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-		for (final EntityDropParticleFX drop : drops) {
-			if (drop.isEntityAlive()) {
+		for (final ParticleDrip drop : drops) {
+			if (drop.isAlive()) {
 				if (drop.posY < 1)
 					continue;
 				final int x = MathHelper.floor_double(drop.posX);
@@ -212,11 +214,11 @@ public class PlayerSoundEffectHandler implements IClientEffectHandler {
 		if (event.getSound() == null)
 			return;
 
-		if ((ModOptions.alwaysOverrideSound || !StormProperties.doVanilla()) && replaceRainSound(event.name)) {
+		if ((ModOptions.alwaysOverrideSound || !StormProperties.doVanilla()) && replaceRainSound(event.getName())) {
 			final ISound sound = event.getSound();
-			event.setResultSound(new PositionedSoundRecord(StormProperties.getCurrentStormSound(),
+			event.setResultSound(new PositionedSoundRecord(StormProperties.getCurrentStormSound(), SoundCategory.WEATHER,
 					StormProperties.getCurrentVolume(), sound.getPitch(), sound.getXPosF(), sound.getYPosF(),
-					sound.getZPosF());
+					sound.getZPosF()));
 			return;
 		}
 	}

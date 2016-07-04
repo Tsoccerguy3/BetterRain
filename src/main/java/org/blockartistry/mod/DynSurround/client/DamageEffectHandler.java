@@ -28,9 +28,9 @@ import java.util.UUID;
 
 import org.blockartistry.mod.DynSurround.ModOptions;
 import org.blockartistry.mod.DynSurround.client.EnvironStateHandler.EnvironState;
-import org.blockartistry.mod.DynSurround.client.fx.particle.EntityCriticalPopOffFX;
-import org.blockartistry.mod.DynSurround.client.fx.particle.EntityDamagePopOffFX;
-import org.blockartistry.mod.DynSurround.client.fx.particle.EntityHealPopOffFX;
+import org.blockartistry.mod.DynSurround.client.fx.particle.ParticleCriticalPopOff;
+import org.blockartistry.mod.DynSurround.client.fx.particle.ParticleDamagePopOff;
+import org.blockartistry.mod.DynSurround.client.fx.particle.ParticleHealPopOff;
 import org.blockartistry.mod.DynSurround.network.Network;
 
 import net.minecraft.client.Minecraft;
@@ -163,13 +163,13 @@ public final class DamageEffectHandler {
 		Particle fx;
 
 		if (data.isCritical) {
-			fx = new EntityCriticalPopOffFX(world, data.posX, data.posY, data.posZ);
+			fx = new ParticleCriticalPopOff(world, data.posX, data.posY, data.posZ);
 			renderer.addEffect(fx);
 		}
 		if (data.amount > 0) {
-			fx = new EntityDamagePopOffFX(world, data.posX, data.posY, data.posZ, data.amount);
+			fx = new ParticleDamagePopOff(world, data.posX, data.posY, data.posZ, data.amount);
 		} else {
-			fx = new EntityHealPopOffFX(world, data.posX, data.posY, data.posZ, MathHelper.abs_int(data.amount));
+			fx = new ParticleHealPopOff(world, data.posX, data.posY, data.posZ, MathHelper.abs_int(data.amount));
 		}
 		renderer.addEffect(fx);
 	}

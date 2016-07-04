@@ -37,7 +37,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockDoublePlant;
 import net.minecraft.block.BlockFalling;
-import net.minecraft.block.BlockLeavesBase;
+import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockPane;
 import net.minecraft.block.BlockRailBase;
@@ -45,6 +45,7 @@ import net.minecraft.block.BlockRotatedPillar;
 import net.minecraft.block.BlockSlab;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.BlockTorch;
+import net.minecraft.block.SoundType;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -62,14 +63,14 @@ public class GenerateBlockReport {
 			Block block = (Block) o;
 			String name = MCHelper.nameOf(block);
 
-			// stepSound.stepSoundName
 			String soundName;
-			if (block.stepSound == null) {
+			SoundType soundType = block.getSoundType();
+			if (soundType == null) {
 				soundName = "NO_STEP";
-			} else if (block.stepSound.soundName == null) {
+			} else if (soundType.soundName == null) {
 				soundName = "NO_SOUND";
 			} else {
-				soundName = block.stepSound.soundName;
+				soundName = soundType.soundName;
 			}
 
 			if (block instanceof BlockLiquid) {
@@ -87,7 +88,7 @@ public class GenerateBlockReport {
 			if (block instanceof BlockContainer) {
 				soundName += "," + "EXTENDS_CONTAINER";
 			}
-			if (block instanceof BlockLeavesBase) {
+			if (block instanceof BlockLeaves) {
 				soundName += "," + "EXTENDS_LEAVES";
 			}
 			if (block instanceof BlockRailBase) {
@@ -114,11 +115,7 @@ public class GenerateBlockReport {
 			if (block instanceof BlockTorch) {
 				soundName += "," + "EXTENDS_TORCH";
 			}
-			/*
-			 * if (!block.func_149662_c()) { soundName += "," + "FUNC_POPPABLE";
-			 * }
-			 */
-			if (!block.isOpaqueCube()) {
+			if (!block.isVisuallyOpaque()) { // TODO resolve
 				soundName += "," + "HITBOX";
 			}
 

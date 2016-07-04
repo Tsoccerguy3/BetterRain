@@ -31,6 +31,7 @@ import org.blockartistry.mod.DynSurround.data.DimensionEffectData;
 
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -49,16 +50,17 @@ public enum StormProperties {
 	private final ResourceLocation rainTexture;
 	private final ResourceLocation snowTexture;
 	private final ResourceLocation dustTexture;
-	private final String rainSound;
-	private final String dustSound;
+	private final SoundEvent rainSound;
+	private final SoundEvent dustSound;
 
 	private StormProperties() {
 		this.level = -10.0F;
 		this.rainTexture = EntityRenderer.RAIN_TEXTURES;
 		this.snowTexture = EntityRenderer.SNOW_TEXTURES;
 		this.dustTexture = new ResourceLocation(Module.MOD_ID, "textures/environment/dust_calm.png");
-		this.rainSound = String.format("%s:%s", Module.MOD_ID, "rain");
-		this.dustSound = String.format("%s:%s", Module.MOD_ID, "dust");
+		this.rainSound = new SoundEvent(new ResourceLocation(Module.MOD_ID, "rain"));
+		this.dustSound = new SoundEvent(new ResourceLocation(Module.MOD_ID, "dust"));
+		// TODO registration
 	}
 
 	private StormProperties(final float level, final String intensity) {
@@ -69,8 +71,9 @@ public enum StormProperties {
 				String.format("textures/environment/snow_%s.png", intensity));
 		this.dustTexture = new ResourceLocation(Module.MOD_ID,
 				String.format("textures/environment/dust_%s.png", intensity));
-		this.rainSound = String.format("%s:%s", Module.MOD_ID, "rain");
-		this.dustSound = String.format("%s:%s", Module.MOD_ID, "dust");
+		this.rainSound = new SoundEvent(new ResourceLocation(Module.MOD_ID, "rain"));
+		this.dustSound = new SoundEvent(new ResourceLocation(Module.MOD_ID, "dust"));
+		// TODO registration
 	}
 
 	public static StormProperties getIntensity() {
@@ -85,11 +88,11 @@ public enum StormProperties {
 		return fogDensity;
 	}
 
-	public String getStormSound() {
+	public SoundEvent getStormSound() {
 		return this.rainSound;
 	}
 
-	public String getDustSound() {
+	public SoundEvent getDustSound() {
 		return this.dustSound;
 	}
 
@@ -97,12 +100,12 @@ public enum StormProperties {
 		return (doVanilla() ? 0.66F : intensityLevel) * ModOptions.soundLevel;
 	}
 
-	public static ResourceLocation getCurrentStormSound() {
-		return new ResourceLocation(intensity.rainSound);
+	public static SoundEvent getCurrentStormSound() {
+		return intensity.rainSound;
 	}
 
-	public static ResourceLocation getCurrentDustSound() {
-		return new ResourceLocation(intensity.dustSound);
+	public static SoundEvent getCurrentDustSound() {
+		return intensity.dustSound;
 	}
 
 	public static boolean doVanilla() {

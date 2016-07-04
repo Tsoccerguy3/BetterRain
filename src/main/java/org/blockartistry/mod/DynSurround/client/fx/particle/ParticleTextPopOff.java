@@ -29,17 +29,17 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class EntityTextPopOffFX extends EntityFX {
+public class ParticleTextPopOff extends Particle {
 
 	protected static final float GRAVITY = 0.8F;
 	protected static final float SIZE = 3.0F;
@@ -51,8 +51,9 @@ public class EntityTextPopOffFX extends EntityFX {
 	protected boolean shouldOnTop = false;
 	protected boolean grow = true;
 	protected float scale = 1.0F;
+	protected float rotationYaw, rotationPitch;
 
-	public EntityTextPopOffFX(final World world, final String text, final Color color, final float scale,
+	public ParticleTextPopOff(final World world, final String text, final Color color, final float scale,
 			final double x, final double y, final double z, final double dX, final double dY, final double dZ) {
 		super(world, x, y, z, dX, dY, dZ);
 
@@ -74,10 +75,10 @@ public class EntityTextPopOffFX extends EntityFX {
 	}
 
 	@Override
-	public void renderParticle(final WorldRenderer renderer, final Entity entity, final float x, final float y,
+	public void renderParticle(final VertexBuffer renderer, final Entity entity, final float x, final float y,
 			final float z, final float dX, final float dY, final float dZ) {
-		this.rotationYaw = (-Minecraft.getMinecraft().thePlayer.rotationYaw);
-		this.rotationPitch = Minecraft.getMinecraft().thePlayer.rotationPitch;
+		this.rotationYaw = (-entity.rotationYaw);
+		this.rotationPitch = entity.rotationPitch;
 
 		final float locX = ((float) (this.prevPosX + (this.posX - this.prevPosX) * x - interpPosX));
 		final float locY = ((float) (this.prevPosY + (this.posY - this.prevPosY) * y - interpPosY));

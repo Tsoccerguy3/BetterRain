@@ -24,13 +24,12 @@
 
 package org.blockartistry.mod.DynSurround.client.fx.particle;
 
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import net.minecraft.client.particle.EntityLavaFX;
-import net.minecraft.client.particle.EntityRainFX;
-import net.minecraft.client.particle.EntitySmokeFX;
 import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.particle.ParticleLava;
+import net.minecraft.client.particle.ParticleRain;
+import net.minecraft.client.particle.ParticleSmokeNormal;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ParticleFactory {
@@ -38,8 +37,8 @@ public class ParticleFactory {
 	private ParticleFactory() {
 	}
 
-	public static final IParticleFactory lavaSpark = new EntityLavaFX.Factory();
-	public static final IParticleFactory smoke = new EntitySmokeFX.Factory();
-	public static final IParticleFactory rain = new EntityRainFX.Factory();
+	public static final IParticleFactory lavaSpark = new ParticleLava.Factory();
+	public static final IParticleFactory smoke = new ParticleSmokeNormal.Factory();
+	public static final IParticleFactory rain = new ParticleRain.Factory();
 	
 }

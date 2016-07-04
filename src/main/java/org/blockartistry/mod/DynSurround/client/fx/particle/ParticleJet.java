@@ -28,13 +28,13 @@ import java.util.Random;
 
 import org.blockartistry.mod.DynSurround.util.XorShiftRandom;
 
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /*
  * Base for particle entities that are long lived and generate
@@ -42,18 +42,18 @@ import net.minecraft.world.World;
  * serves as a particle factory.
  */
 @SideOnly(Side.CLIENT)
-public abstract class EntityJetFX extends EntityFX {
+public abstract class ParticleJet extends Particle {
 
 	protected static final Random RANDOM = new XorShiftRandom();
 
 	protected final int jetStrength;
 	protected final int updateFrequency;
 
-	public EntityJetFX(final int strength, final World world, final double x, final double y, final double z) {
+	public ParticleJet(final int strength, final World world, final double x, final double y, final double z) {
 		this(strength, world, x, y, z, 3);
 	}
 
-	public EntityJetFX(final int strength, final World world, final double x, final double y, final double z,
+	public ParticleJet(final int strength, final World world, final double x, final double y, final double z,
 			final int freq) {
 		super(world, x, y, z);
 
@@ -67,14 +67,14 @@ public abstract class EntityJetFX extends EntityFX {
 	 * Nothing to render so optimize out
 	 */
 	@Override
-	public void renderParticle(WorldRenderer worldRendererIn, Entity entityIn, float partialTicks, float p_180434_4_,
+	public void renderParticle(VertexBuffer worldRendererIn, Entity entityIn, float partialTicks, float p_180434_4_,
 			float p_180434_5_, float p_180434_6_, float p_180434_7_, float p_180434_8_) {
 	}
 
 	/*
 	 * Override in derived class to provide particle for the jet.
 	 */
-	protected abstract EntityFX getJetParticle();
+	protected abstract Particle getJetParticle();
 
 	/*
 	 * Hook to play sound when the jet is created
@@ -95,7 +95,7 @@ public abstract class EntityJetFX extends EntityFX {
 		}
 
 		if (this.particleAge++ >= this.particleMaxAge) {
-			this.setDead();
+			this.setExpired();
 		}
 	}
 }

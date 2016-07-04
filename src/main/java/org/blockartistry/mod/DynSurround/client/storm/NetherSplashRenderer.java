@@ -26,9 +26,13 @@ package org.blockartistry.mod.DynSurround.client.storm;
 
 import org.blockartistry.mod.DynSurround.client.EnvironStateHandler.EnvironState;
 import org.blockartistry.mod.DynSurround.client.fx.particle.ParticleFactory;
+import org.blockartistry.mod.DynSurround.compat.MCHelper;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -36,12 +40,12 @@ import net.minecraft.world.World;
 public class NetherSplashRenderer extends StormSplashRenderer {
 
 	@Override
-	protected String getBlockSoundFX(final Block block, final boolean hasDust, final World world) {
+	protected SoundEvent getBlockSound(final Block block, final boolean hasDust, final World world) {
 		return hasDust ? StormProperties.getIntensity().getDustSound() : null;
 	}
 
 	@Override
-	protected EntityFX getBlockParticleFX(final Block block, final boolean dust, final World world, final double x,
+	protected Particle getBlockParticle(final IBlockState block, final boolean dust, final World world, final double x,
 			final double y, final double z) {
 		if (dust)
 			return ParticleFactory.smoke.getEntityFX(0, world, x, y, z, 0, 0, 0);
@@ -54,10 +58,10 @@ public class NetherSplashRenderer extends StormSplashRenderer {
 		boolean airBlockFound = false;
 		for (int i = range; i >= -range; i--) {
 			final BlockPos p = new BlockPos(pos.getX(), y + i, pos.getZ());
-			final Block block = world.getBlockState(p).getBlock();
-			if (airBlockFound && block != Blocks.air && block.getMaterial().isSolid())
+			final IBlockState state = world.getBlockState(p);
+			if (airBlockFound && !MCHelper.isAirBlock(state, world, p) && state.getMaterial().isSolid())
 				return p.up();
-			if (block == Blocks.air)
+			if (MCHelper.isAirBlock(state, world, p))
 				airBlockFound = true;
 		}
 

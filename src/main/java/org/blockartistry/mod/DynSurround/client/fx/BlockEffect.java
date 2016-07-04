@@ -1,7 +1,7 @@
 /*
  * This file is part of Dynamic Surroundings, licensed under the MIT License (MIT).
  *
- * Copyright (c) OreCruncher
+ * Copyright (c) OreCruncher, Abastro
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@ package org.blockartistry.mod.DynSurround.client.fx;
 
 import java.util.Random;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -49,12 +49,12 @@ public abstract class BlockEffect {
 		return this.chance;
 	}
 
-	public boolean trigger(final Block block, final World world, final BlockPos pos,
+	public boolean trigger(final IBlockState state, final World world, final BlockPos pos,
 			final Random random) {
 		return random.nextInt(getChance()) == 0;
 	}
 
-	public abstract void doEffect(final Block block, final World world, final BlockPos pos,
+	public abstract void doEffect(final IBlockState state, final World world, final BlockPos pos,
 			final Random random);
 	
 	@Override

@@ -42,10 +42,12 @@ import org.blockartistry.mod.DynSurround.client.footsteps.mcpackage.interfaces.I
 import org.blockartistry.mod.DynSurround.util.XorShiftRandom;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -74,15 +76,16 @@ public class AcousticsManager extends AcousticsLibrary implements ISoundPlayer, 
 	@Override
 	public void playStep(final EntityLivingBase entity, final Association assos) {
 		Block block = assos.getBlock();
-		if (!block.getMaterial().isLiquid() && block.stepSound != null) {
-			Block.SoundType soundType = block.stepSound;
+		IBlockState state = assos.getState();
+		if (!state.getMaterial().isLiquid() && block.getSoundType() != null) {
+			SoundType soundType = block.getSoundType();
 
-			if (EnvironState.getWorld().getBlockState(new BlockPos(assos.x, assos.y + 1, assos.z))
-					.getBlock() == Blocks.snow_layer) {
-				soundType = Blocks.snow_layer.stepSound;
+			if (EnvironState.getWorld().getBlockState(assos.getPos().up())
+					.getBlock() == Blocks.SNOW_LAYER) {
+				soundType = Blocks.SNOW_LAYER.getSoundType();
 			}
 
-			entity.playSound(soundType.getStepSound(), soundType.getVolume() * 0.15F, soundType.getFrequency());
+			entity.playSound(soundType.getStepSound(), soundType.getVolume() * 0.15F, soundType.getPitch());
 		}
 	}
 

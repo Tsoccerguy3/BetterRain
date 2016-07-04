@@ -24,13 +24,22 @@
 
 package org.blockartistry.mod.DynSurround.client.fx.particle;
 
-import org.blockartistry.mod.DynSurround.util.Color;
-
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleBubble;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class EntityDamagePopOffFX extends EntityTextPopOffFX {
+@SideOnly(Side.CLIENT)
+public class ParticleBubbleJet extends ParticleJet {
 
-	public EntityDamagePopOffFX(final World world, final double x, final double y, final double z, final int amount) {
-		super(world, String.valueOf(amount), Color.RED, 1.0F, x, y, z, 0.001D, 0.05D * BOUNCE_STRENGTH, 0.001D);
+	public ParticleBubbleJet(final int strength, final World world, final double x, final double y, final double z) {
+		super(strength, world, x, y, z);
+	}
+
+	@Override
+	protected Particle getJetParticle() {
+		return new ParticleBubble.Factory().getEntityFX(0, this.worldObj, this.posX, this.posY, this.posZ, 0.0D,
+				0.5D + this.jetStrength / 10.0D, 0.0D);
 	}
 }
