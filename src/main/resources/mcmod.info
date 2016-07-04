@@ -5,7 +5,7 @@
   "description": "Improving Minecraft's sight and sound experience",
   "version": "$version",
   "mcversion": "$mcversion",
-  "url": "https://github.com/OreCruncher/BetterRain/wiki",
+  "url": "https://github.com/Abastro/BetterRain",
   "updateUrl": "",
   "authorList": ["Abastro", "OreCruncher"],
   "credits": "Official Dynamic Surroundings for OreCruncher; Wirsbo for BetterRain; MrRube for Aurora Rubealis; Hurricaaane for Presence Footsteps",

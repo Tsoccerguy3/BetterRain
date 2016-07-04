@@ -39,7 +39,7 @@ import org.blockartistry.mod.DynSurround.network.Network;
 import org.blockartistry.mod.DynSurround.util.DiurnalUtils;
 import org.blockartistry.mod.DynSurround.util.PlayerUtils;
 import org.blockartistry.mod.DynSurround.util.WorldUtils;
-import org.blockartistry.mod.DynSurround.world.WorldProviderCloudColorHandle;
+import org.blockartistry.mod.DynSurround.world.WorldProviderWeatherHandle;
 
 import gnu.trove.map.hash.TIntIntHashMap;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -72,7 +72,7 @@ public final class ServerEffectHandler {
 
 		// Shim the provider.
 		if (WorldUtils.isDimensionHasSky(world.provider)) {
-			e.getWorld().provider = new WorldProviderCloudColorHandle(world, world.provider);
+			e.getWorld().provider = new WorldProviderWeatherHandle(world, world.provider);
 		}
 	}
 

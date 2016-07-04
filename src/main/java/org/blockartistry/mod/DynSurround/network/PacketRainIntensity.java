@@ -52,11 +52,13 @@ public final class PacketRainIntensity implements IMessage, IMessageHandler<Pack
 		this.dimension = dimension;
 	}
 
+	@Override
 	public void fromBytes(final ByteBuf buf) {
 		this.intensity = buf.readFloat();
 		this.dimension = buf.readInt();
 	}
 
+	@Override
 	public void toBytes(final ByteBuf buf) {
 		buf.writeFloat(this.intensity);
 		buf.writeInt(this.dimension);

@@ -371,7 +371,7 @@ public class WorldProviderShimBase extends WorldProvider {
 	@Override
 	public float getSunBrightnessFactor(float par1)
 	{
-		return provider.getSunBrightness(par1);
+		return provider.getSunBrightnessFactor(par1);
 	}
 
 	/**

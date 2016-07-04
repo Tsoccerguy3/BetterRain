@@ -36,6 +36,7 @@ import org.blockartistry.mod.DynSurround.client.footsteps.game.user.GenerateBloc
 import org.blockartistry.mod.DynSurround.client.fx.particle.ParticleRainOverride;
 import org.blockartistry.mod.DynSurround.client.hud.GuiHUDHandler;
 import org.blockartistry.mod.DynSurround.client.sound.SoundManager;
+import org.blockartistry.mod.DynSurround.client.storm.StormProperties;
 import org.blockartistry.mod.DynSurround.data.BlockRegistry;
 import org.blockartistry.mod.DynSurround.data.SoundRegistry;
 
@@ -61,11 +62,15 @@ public class ProxyClient extends Proxy {
 	@Override
 	public void init(final FMLInitializationEvent event) {
 		super.init(event);
+		
+		// Don't know where it should be
+		StormProperties.initialize();
+		
 		BlockRegistry.initialize();
 		ClientEffectHandler.initialize();
 		GuiHUDHandler.initialize();
 		SoundRegistry.initialize();
-		
+
 		// Particle Overrides, don't know where it should be
 		Minecraft.getMinecraft().effectRenderer.registerParticle(
 				EnumParticleTypes.WATER_DROP.getParticleID(), new ParticleRainOverride.Factory());

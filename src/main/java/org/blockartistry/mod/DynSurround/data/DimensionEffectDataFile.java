@@ -37,7 +37,7 @@ import net.minecraftforge.common.util.Constants;
 
 public final class DimensionEffectDataFile extends WorldSavedData {
 
-	private final static String IDENTIFIER = Module.MOD_ID;
+	private final static String IDENTIFIER = Module.RESOURCE_ID;
 
 	private final class NBT {
 		public final static String ENTRIES = "e";

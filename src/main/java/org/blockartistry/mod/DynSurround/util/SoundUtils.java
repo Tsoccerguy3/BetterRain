@@ -24,6 +24,8 @@
 
 package org.blockartistry.mod.DynSurround.util;
 
+import org.blockartistry.mod.DynSurround.Module;
+
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -35,10 +37,11 @@ public class SoundUtils {
 	}
 	
 	public static SoundEvent getOrRegisterSound(final ResourceLocation location) {
-		if(SoundEvent.REGISTRY.containsKey(location))
-			return SoundEvent.REGISTRY.getObject(location);
+		ResourceLocation registryName = new ResourceLocation(Module.MOD_ID, location.getResourcePath());
+		if(SoundEvent.REGISTRY.containsKey(registryName))
+			return SoundEvent.REGISTRY.getObject(registryName);
 		
-		SoundEvent sound = new SoundEvent(location).setRegistryName(location);
+		SoundEvent sound = new SoundEvent(location).setRegistryName(registryName);
 		GameRegistry.register(sound);
 		return sound;
 	}

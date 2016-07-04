@@ -62,7 +62,7 @@ public final class BiomeRegistry {
 	public static final FakeBiome OUTERSPACE = new FakeBiome(-7, "OuterSpace");
 	public static final FakeBiome CLOUDS = new FakeBiome(-8, "Clouds");
 
-	public static final SoundEffect WATER_DRIP = new SoundEffect(Module.MOD_ID + ":waterdrops");
+	public static final SoundEffect WATER_DRIP = new SoundEffect(Module.RESOURCE_ID + ":waterdrops");
 
 	// This is for cases when the biome coming in doesn't make sense
 	// and should default to something to avoid crap. - Wat
@@ -284,7 +284,7 @@ public final class BiomeRegistry {
 
 	private static void processConfig() {
 		try {
-			process(BiomeConfig.load(Module.MOD_ID));
+			process(BiomeConfig.load(Module.RESOURCE_ID));
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
