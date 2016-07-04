@@ -88,7 +88,7 @@ public class WorldProviderWeatherHandle extends WorldProviderShimBase {
 
 					        	ModLog.info("Visiting method call %s with description %s during inspection on WorldProvider#updateWeather(), for compat",
 					        			name, desc);
-					        	
+
 					        	try {
 									if(name.equals("updateWeatherBody") && desc.equals(Type.getMethodDescriptor(World.class.getMethod("updateWeatherBody")))) {
 										patchWeather = true;

@@ -39,7 +39,9 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
-@net.minecraftforge.fml.common.Mod(modid = Module.MOD_ID, useMetadata = true, dependencies = Module.DEPENDENCIES, version = Module.VERSION, guiFactory = Module.GUI_FACTORY)
+@net.minecraftforge.fml.common.Mod(modid = Module.MOD_ID, useMetadata = true,
+acceptedMinecraftVersions="[1.9.4, 1.11.0)",
+dependencies = Module.DEPENDENCIES, version = Module.VERSION, guiFactory = Module.GUI_FACTORY)
 public class Module {
 	public static final String MOD_ID = "dsurroundunofficial";
 	public static final String RESOURCE_ID = "dsurround";
