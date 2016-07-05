@@ -28,10 +28,9 @@ import java.util.Map;
 
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
-@IFMLLoadingPlugin.MCVersion("[1.9.4, 1.11.0)")
 @IFMLLoadingPlugin.TransformerExclusions({ "org.blockartistry.mod.DynSurround.asm." })
 @IFMLLoadingPlugin.SortingIndex(10001)
-@IFMLLoadingPlugin.Name("dsurroundcore")
+@IFMLLoadingPlugin.Name("dsurroundcore_unofficial")
 public class TransformLoader implements IFMLLoadingPlugin {
 
 	public static boolean runtimeDeobEnabled = true;

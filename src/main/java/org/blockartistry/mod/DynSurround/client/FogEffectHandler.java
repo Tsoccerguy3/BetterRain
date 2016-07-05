@@ -141,10 +141,9 @@ public class FogEffectHandler implements IClientEffectHandler {
 	 * Hook the fog color event so we can tell the renderer what color the fog
 	 * should be.
 	 */
-	@SubscribeEvent(priority = EventPriority.LOWEST)
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void fogColorEvent(final EntityViewRenderEvent.FogColors event) {
-		// Timing is everything...
-		if (currentFogColor == null || event.getResult() != Result.DEFAULT)
+		if (currentFogColor == null)
 			return;
 
 		if (currentFogLevel == 0)
@@ -158,7 +157,6 @@ public class FogEffectHandler implements IClientEffectHandler {
 		event.setRed(currentFogColor.red);
 		event.setGreen(currentFogColor.green);
 		event.setBlue(currentFogColor.blue);
-		event.setResult(Result.ALLOW);
 	}
 
 	/*
