@@ -59,10 +59,6 @@ public final class ModOptions {
 	@Comment("Enables/disables debug logging of the mod")
 	@RestartRequired
 	public static boolean enableDebugLogging = false;
-	@Parameter(category = CATEGORY_LOGGING_CONTROL, property = CONFIG_ENABLE_ONLINE_VERSION_CHECK, defaultValue = "true")
-	@Comment("Enables/disables online version checking")
-	@RestartRequired
-	public static boolean enableVersionChecking = true;
 
 	public static final String CATEGORY_RAIN = "rain";
 	public static final String CONFIG_RAIN_VOLUME = "Sound Level";
