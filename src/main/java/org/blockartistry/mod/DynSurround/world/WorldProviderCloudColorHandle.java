@@ -71,4 +71,10 @@ public class WorldProviderCloudColorHandle extends WorldProviderShimBase {
 		}
 		return color.toVec3d();
 	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public float getCloudHeight() {
+		return DimensionRegistry.getCloudHeight(this.worldObj);
+}
 }

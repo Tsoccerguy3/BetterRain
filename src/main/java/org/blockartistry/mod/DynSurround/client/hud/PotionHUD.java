@@ -44,19 +44,18 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-//net.minecraft.client.renderer.InventoryEffectRenderer
-
+// TODO will be removed; Vanilla mechanics now have potion HUD
 @SideOnly(Side.CLIENT)
 public class PotionHUD extends Gui implements IGuiOverlay {
 
 	private static final ResourceLocation TEXTURE = new ResourceLocation("textures/gui/container/inventory.png");
 
 	public void doRender(final RenderGameOverlayEvent event) {
-
+		
 		if (event.isCancelable() || event.getType() != ElementType.EXPERIENCE) {
 			return;
 		}
-
+		/*
 		final int TEXT_POTION_NAME = (int) (255 * ModOptions.potionHudTransparency) << 24 | 0xFFFFFF;
 		final int TEXT_DURATION = (int) (255 * ModOptions.potionHudTransparency) << 24 | 0x7F7F7F;
 		final int TEXT_DURATION_LOW = (int) (255 * ModOptions.potionHudTransparency) << 24 | 0xFF0000;
@@ -122,6 +121,6 @@ public class PotionHUD extends Gui implements IGuiOverlay {
 						potioneffect.getDuration() <= 200 ? TEXT_DURATION_LOW : TEXT_DURATION);
 			}
 			GL11.glPopMatrix();
-		}
+		}*/
 	}
 }
