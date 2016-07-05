@@ -156,7 +156,7 @@ public final class BiomeRegistry {
 	}
 	
 	private static void registerBiome(final Biome biome) {
-		registry.put(Biome.getIdForBiome(biome), new Entry(biome));
+		registry.put(getBiomeID(biome), new Entry(biome));
 	}
 	
 	private static int getBiomeID(final Biome biome) {
