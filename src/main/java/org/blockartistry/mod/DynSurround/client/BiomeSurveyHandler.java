@@ -70,14 +70,14 @@ public final class BiomeSurveyHandler implements IClientEffectHandler {
 			weights.put(EnvironState.getPlayerBiome(), 1);
 		} else {
 			final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-			final int x = MathHelper.floor_double(player.posX);
-			final int z = MathHelper.floor_double(player.posZ);
+			final int x = MathHelper.floor(player.posX);
+			final int z = MathHelper.floor(player.posZ);
 
 			for (int dX = -range; dX <= range; dX++)
 				for (int dZ = -range; dZ <= range; dZ++) {
 					area++;
 					pos.setPos(x + dX, 0, z + dZ);
-					final Biome biome = player.worldObj.getBiome(pos);
+					final Biome biome = player.world.getBiome(pos);
 					weights.adjustOrPutValue(biome, 1, 1);
 				}
 		}
@@ -85,9 +85,9 @@ public final class BiomeSurveyHandler implements IClientEffectHandler {
 
 	@Override
 	public void process(final World world, final EntityPlayer player) {
-		final int playerX = MathHelper.floor_double(player.posX);
-		final int playerY = MathHelper.floor_double(player.posY);
-		final int playerZ = MathHelper.floor_double(player.posZ);
+		final int playerX = MathHelper.floor(player.posX);
+		final int playerY = MathHelper.floor(player.posY);
+		final int playerZ = MathHelper.floor(player.posZ);
 
 		if (lastDimension != EnvironState.getDimensionId() || playerX != lastPlayerX || playerY != lastPlayerY
 				|| playerZ != lastPlayerZ || lastPlayerBiome != EnvironState.getPlayerBiome()) {

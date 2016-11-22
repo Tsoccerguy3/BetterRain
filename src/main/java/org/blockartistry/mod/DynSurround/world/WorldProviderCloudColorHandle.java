@@ -64,7 +64,7 @@ public class WorldProviderCloudColorHandle extends WorldProviderShimBase {
 	@SideOnly(Side.CLIENT)
 	public Vec3d getCloudColor(float partialTicks) {
 		final Color color = new Color(this.provider.getCloudColor(partialTicks));
-		final float stormIntensity = this.worldObj.getRainStrength(1.0F);
+		final float stormIntensity = this.world.getRainStrength(1.0F);
 		if (stormIntensity > 0.0F) {
 			// Need to darken the clouds based on intensity
 			color.scale((1.0F - stormIntensity) * 0.5F + 0.5F);
@@ -75,6 +75,6 @@ public class WorldProviderCloudColorHandle extends WorldProviderShimBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public float getCloudHeight() {
-		return DimensionRegistry.getCloudHeight(this.worldObj);
+		return DimensionRegistry.getCloudHeight(this.world);
 }
 }

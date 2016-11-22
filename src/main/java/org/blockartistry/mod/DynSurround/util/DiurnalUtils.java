@@ -30,24 +30,24 @@ public final class DiurnalUtils {
 	}
 
 	public static boolean isDaytime(final World world) {
-		return !world.provider.getHasNoSky()
+		return !world.provider.hasNoSky()
 				&& world.provider.getSunBrightnessFactor(1.0f) > 0.6f;
 	}
 
 	public static boolean isNighttime(final World world) {
-		return !world.provider.getHasNoSky()
+		return !world.provider.hasNoSky()
 				&& world.provider.getSunBrightnessFactor(1.0f) < 0.1f;
 	}
 
 	public static boolean isSunrise(final World world) {
-		if(world.provider.getHasNoSky())
+		if(world.provider.hasNoSky())
 			return false;
 		float brFactor = world.provider.getSunBrightnessFactor(1.0f);
 		return brFactor > 0.1f && brFactor < 0.6f && Math.sin(world.getCelestialAngleRadians(1.0f)) < 0.0;
 	}
 
 	public static boolean isSunset(final World world) {
-		if(world.provider.getHasNoSky())
+		if(world.provider.hasNoSky())
 			return false;
 		float brFactor = world.provider.getSunBrightnessFactor(1.0f);
 		return brFactor > 0.1f && brFactor < 0.6f && Math.sin(world.getCelestialAngleRadians(1.0f)) > 0.0;

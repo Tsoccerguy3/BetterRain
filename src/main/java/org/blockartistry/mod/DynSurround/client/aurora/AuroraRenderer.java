@@ -59,13 +59,13 @@ public final class AuroraRenderer extends IAtmosRenderer {
 		final float moonFactor = 1.0F - DiurnalUtils.getMoonPhaseFactor(world) * 1.1F;
 		if (moonFactor <= 0.0F)
 			return 0.0F;
-		return MathHelper.clamp_float(moonFactor * moonFactor, 0.0F, 1.0F);
+		return MathHelper.clamp(moonFactor * moonFactor, 0.0F, 1.0F);
 	}
 
 	public static void renderAurora(final float partialTick, final Aurora aurora) {
 
 		final Minecraft mc = FMLClientHandler.instance().getClient();
-		final float alpha = (aurora.getAlpha() * moonlightFactor(mc.theWorld)) / 255.0F;
+		final float alpha = (aurora.getAlpha() * moonlightFactor(mc.world)) / 255.0F;
 		if (alpha <= 0.0F)
 			return;
 
@@ -77,15 +77,15 @@ public final class AuroraRenderer extends IAtmosRenderer {
 			tranY = ModOptions.playerFixedHeight;
 		} else {
 			// Adjust to keep aurora at the same altitude
-			tranY = DimensionRegistry.getCloudHeight(mc.theWorld) + 5 - (float) (mc.thePlayer.lastTickPosY
-					+ (mc.thePlayer.posY - mc.thePlayer.lastTickPosY) * partialTick);
+			tranY = DimensionRegistry.getCloudHeight(mc.world) + 5 - (float) (mc.player.lastTickPosY
+					+ (mc.player.posY - mc.player.lastTickPosY) * partialTick);
 		}
 
 		final double tranX = aurora.posX
-				- (mc.thePlayer.lastTickPosX + (mc.thePlayer.posX - mc.thePlayer.lastTickPosX) * partialTick);
+				- (mc.player.lastTickPosX + (mc.player.posX - mc.player.lastTickPosX) * partialTick);
 
 		final double tranZ = aurora.posZ
-				- (mc.thePlayer.lastTickPosZ + (mc.thePlayer.posZ - mc.thePlayer.lastTickPosZ) * partialTick);
+				- (mc.player.lastTickPosZ + (mc.player.posZ - mc.player.lastTickPosZ) * partialTick);
 
 		if (ModOptions.auroraAnimate)
 			aurora.translate(partialTick);

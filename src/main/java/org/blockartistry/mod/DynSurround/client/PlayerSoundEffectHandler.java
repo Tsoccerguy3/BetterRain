@@ -141,7 +141,7 @@ public class PlayerSoundEffectHandler implements IClientEffectHandler {
 	 */
 	@SubscribeEvent
 	public void playerJoinWorldEvent(final EntityJoinWorldEvent event) {
-		if (event.getEntity().worldObj.isRemote && EnvironState.isPlayer(event.getEntity()))
+		if (event.getEntity().world.isRemote && EnvironState.isPlayer(event.getEntity()))
 			resetSounds();
 	}
 

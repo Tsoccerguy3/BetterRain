@@ -25,7 +25,6 @@
 package org.blockartistry.mod.DynSurround.proxy;
 
 import org.blockartistry.mod.DynSurround.client.DamageEffectHandler;
-import org.blockartistry.mod.DynSurround.client.waila.WailaHandler;
 import org.blockartistry.mod.DynSurround.commands.CommandRain;
 import org.blockartistry.mod.DynSurround.data.BiomeRegistry;
 import org.blockartistry.mod.DynSurround.data.DimensionRegistry;
@@ -48,7 +47,7 @@ public class Proxy {
 		Network.initialize();
 		ServerEffectHandler.initialize();
 		DamageEffectHandler.initialize();
-		WailaHandler.register();
+		//WailaHandler.register();
 	}
 
 	public void postInit(final FMLPostInitializationEvent event) {

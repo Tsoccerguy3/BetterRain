@@ -103,7 +103,7 @@ public final class DamageEffectHandler {
 
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public void onLivingHurt(final LivingHurtEvent event) {
-		if (event == null || event.getEntity() == null || event.getEntity().worldObj == null || event.getEntity().worldObj.isRemote)
+		if (event == null || event.getEntity() == null || event.getEntity().world == null || event.getEntity().world.isRemote)
 			return;
 
 		// Living heal should handle heals - I think..
@@ -127,12 +127,12 @@ public final class DamageEffectHandler {
 		}
 
 		final HealthData data = new HealthData(event.getEntityLiving(), isCrit, (int) event.getAmount());
-		Network.sendHealthUpdate(data, event.getEntity().worldObj.provider.getDimension());
+		Network.sendHealthUpdate(data, event.getEntity().world.provider.getDimension());
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public void onLivingHeal(final LivingHealEvent event) {
-		if (event == null || event.getEntity() == null || event.getEntity().worldObj == null || event.getEntity().worldObj.isRemote)
+		if (event == null || event.getEntity() == null || event.getEntity().world == null || event.getEntity().world.isRemote)
 			return;
 
 		// Just in case
@@ -141,7 +141,7 @@ public final class DamageEffectHandler {
 			return;
 
 		final HealthData data = new HealthData(event.getEntityLiving(), false, -(int) event.getAmount());
-		Network.sendHealthUpdate(data, event.getEntity().worldObj.provider.getDimension());
+		Network.sendHealthUpdate(data, event.getEntity().world.provider.getDimension());
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -169,7 +169,7 @@ public final class DamageEffectHandler {
 		if (data.amount > 0) {
 			fx = new ParticleDamagePopOff(world, data.posX, data.posY, data.posZ, data.amount);
 		} else {
-			fx = new ParticleHealPopOff(world, data.posX, data.posY, data.posZ, MathHelper.abs_int(data.amount));
+			fx = new ParticleHealPopOff(world, data.posX, data.posY, data.posZ, MathHelper.abs(data.amount));
 		}
 		renderer.addEffect(fx);
 	}

@@ -26,7 +26,7 @@
 //
 // https://github.com/Minecraft-Forge-Tutorials/Waila-Integration
 //
-
+/*
 package org.blockartistry.mod.DynSurround.client.waila;
 
 import java.util.List;
@@ -150,4 +150,4 @@ public final class WailaHandler implements IWailaDataProvider {
 		if (ModOptions.enableDebugLogging)
 			FMLInterModComms.sendMessage("Waila", "register", WailaHandler.class.getName() + ".callbackRegister");
 	}
-}
+}*/

@@ -84,7 +84,7 @@ public class StormSplashRenderer {
 
 	protected static float calculateRainSoundVolume(final World world) {
 		return MathHelper
-				.clamp_float(
+				.clamp(
 						(float) (StormProperties.getCurrentVolume()
 								+ GENERATOR.getValue(world.getCelestialAngle(1.0f) * 240.0f - 60.0f, 1) / 5.0F),
 						0.0F, 1.0F);
@@ -108,7 +108,7 @@ public class StormSplashRenderer {
 			factory = ParticleFactory.rain;
 		}
 
-		return factory != null ? factory.getEntityFX(0, world, x, y, z, 0, 0, 0) : null;
+		return factory != null ? factory.createParticle(0, world, x, y, z, 0, 0, 0) : null;
 	}
 
 	protected SoundEvent getBlockSound(final Block block, final boolean hasDust, final World world) {
@@ -125,9 +125,9 @@ public class StormSplashRenderer {
 
 	protected void playSplashSound(final EntityRenderer renderer, final WorldClient world, final Entity player,
 			double x, double y, double z) {
-		final int theX = MathHelper.floor_double(x);
-		final int theY = MathHelper.floor_double(y);
-		final int theZ = MathHelper.floor_double(z);
+		final int theX = MathHelper.floor(x);
+		final int theY = MathHelper.floor(y);
+		final int theZ = MathHelper.floor(z);
 
 		final BlockPos coord = new BlockPos(theX, theY, theZ);
 		final boolean hasDust = WeatherUtils.biomeHasDust(world.getBiome(coord));
@@ -136,13 +136,13 @@ public class StormSplashRenderer {
 		if (sound != null) {
 			final float volume = calculateRainSoundVolume(world);
 			float pitch = 1.0F;
-			final int playerX = MathHelper.floor_double(player.posX);
-			final int playerY = MathHelper.floor_double(player.posY);
-			final int playerZ = MathHelper.floor_double(player.posZ);
+			final int playerX = MathHelper.floor(player.posX);
+			final int playerY = MathHelper.floor(player.posY);
+			final int playerZ = MathHelper.floor(player.posZ);
 			if (y > player.posY + 1.0D
 					&& world.getPrecipitationHeight(new BlockPos(playerX, 0, playerZ)).getY() > playerY)
 				pitch = 0.5F;
-			renderer.mc.theWorld.playSound(coord, sound, SoundCategory.WEATHER, volume, pitch, false);
+			renderer.mc.world.playSound(coord, sound, SoundCategory.WEATHER, volume, pitch, false);
 		}
 	}
 
@@ -153,7 +153,7 @@ public class StormSplashRenderer {
 		if (!DimensionRegistry.hasWeather(EnvironState.getWorld()))
 			return;
 
-		float rainStrengthFactor = theThis.mc.theWorld.getRainStrength(1.0F);
+		float rainStrengthFactor = theThis.mc.world.getRainStrength(1.0F);
 		if (!theThis.mc.gameSettings.fancyGraphics)
 			rainStrengthFactor /= 2.0F;
 
@@ -162,10 +162,10 @@ public class StormSplashRenderer {
 
 		RANDOM.setSeed((long) theThis.rendererUpdateCount * 312987231L);
 		final Entity entity = theThis.mc.getRenderViewEntity();
-		final WorldClient worldclient = theThis.mc.theWorld;
-		final int playerX = MathHelper.floor_double(entity.posX);
-		final int playerY = MathHelper.floor_double(entity.posY);
-		final int playerZ = MathHelper.floor_double(entity.posZ);
+		final WorldClient worldclient = theThis.mc.world;
+		final int playerX = MathHelper.floor(entity.posX);
+		final int playerY = MathHelper.floor(entity.posY);
+		final int playerZ = MathHelper.floor(entity.posZ);
 		double spawnX = 0.0D;
 		double spawnY = 0.0D;
 		double spawnZ = 0.0D;

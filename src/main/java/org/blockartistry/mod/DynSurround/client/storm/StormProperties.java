@@ -133,7 +133,7 @@ public enum StormProperties {
 			return;
 		}
 
-		level = MathHelper.clamp_float(level, DimensionEffectData.MIN_INTENSITY, DimensionEffectData.MAX_INTENSITY);
+		level = MathHelper.clamp(level, DimensionEffectData.MIN_INTENSITY, DimensionEffectData.MAX_INTENSITY);
 
 		if (intensityLevel != level) {
 			intensityLevel = level;

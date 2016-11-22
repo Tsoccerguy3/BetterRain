@@ -52,10 +52,10 @@ public final class PlayerUtils {
 
 	public static Biome getPlayerBiome(final EntityPlayer player, final boolean getTrue) {
 
-		final int theX = MathHelper.floor_double(player.posX);
-		final int theY = MathHelper.floor_double(player.posY);
-		final int theZ = MathHelper.floor_double(player.posZ);
-		Biome biome = player.worldObj.getBiome(new BlockPos(theX, 0, theZ));
+		final int theX = MathHelper.floor(player.posX);
+		final int theY = MathHelper.floor(player.posY);
+		final int theZ = MathHelper.floor(player.posZ);
+		Biome biome = player.world.getBiome(new BlockPos(theX, 0, theZ));
 
 		if (!getTrue) {
 			if (isUnderWater(player)) {
@@ -69,29 +69,29 @@ public final class PlayerUtils {
 					biome = BiomeRegistry.UNDERWATER;
 			} else if (isUnderGround(player, INSIDE_Y_ADJUST))
 				biome = BiomeRegistry.UNDERGROUND;
-			else if (theY >= DimensionRegistry.getSpaceHeight(player.worldObj))
+			else if (theY >= DimensionRegistry.getSpaceHeight(player.world))
 				biome = BiomeRegistry.OUTERSPACE;
-			else if (theY >= DimensionRegistry.getCloudHeight(player.worldObj))
+			else if (theY >= DimensionRegistry.getCloudHeight(player.world))
 				biome = BiomeRegistry.CLOUDS;
 		}
 		return biome;
 	}
 
 	public static int getPlayerDimension(@Nonnull final EntityPlayer player) {
-		if (player == null || player.worldObj == null)
+		if (player == null || player.world == null)
 			return -256;
-		return player.worldObj.provider.getDimension();
+		return player.world.provider.getDimension();
 	}
 
 	public static boolean isUnderWater(final EntityPlayer player) {
-		final int x = MathHelper.floor_double(player.posX);
-		final int y = MathHelper.floor_double(player.posY + player.getEyeHeight());
-		final int z = MathHelper.floor_double(player.posZ);
-		return player.worldObj.getBlockState(new BlockPos(x, y, z)).getMaterial() == Material.WATER;
+		final int x = MathHelper.floor(player.posX);
+		final int y = MathHelper.floor(player.posY + player.getEyeHeight());
+		final int z = MathHelper.floor(player.posZ);
+		return player.world.getBlockState(new BlockPos(x, y, z)).getMaterial() == Material.WATER;
 	}
 
 	public static boolean isUnderGround(final EntityPlayer player, final int offset) {
-		return MathHelper.floor_double(player.posY + offset) < DimensionRegistry.getSeaLevel(player.worldObj);
+		return MathHelper.floor(player.posY + offset) < DimensionRegistry.getSeaLevel(player.world);
 	}
 
 	private static final int RANGE = 3;
@@ -103,10 +103,10 @@ public final class PlayerUtils {
 		int seeSky = 0;
 		for (int x = -RANGE; x <= RANGE; x++)
 			for (int z = -RANGE; z <= RANGE; z++) {
-				final int theX = MathHelper.floor_double(x + entity.posX);
-				final int theZ = MathHelper.floor_double(z + entity.posZ);
+				final int theX = MathHelper.floor(x + entity.posX);
+				final int theZ = MathHelper.floor(z + entity.posZ);
 				pos.setPos(theX, 0, theZ);
-				final int y = entity.worldObj.getTopSolidOrLiquidBlock(pos).getY();
+				final int y = entity.world.getTopSolidOrLiquidBlock(pos).getY();
 				if ((y - targetY) < 3)
 					++seeSky;
 			}
@@ -119,6 +119,6 @@ public final class PlayerUtils {
 
 	@SideOnly(Side.CLIENT)
 	public static int getClientPlayerDimension() {
-		return getPlayerDimension(FMLClientHandler.instance().getClient().thePlayer);
+		return getPlayerDimension(FMLClientHandler.instance().getClient().player);
 	}
 }

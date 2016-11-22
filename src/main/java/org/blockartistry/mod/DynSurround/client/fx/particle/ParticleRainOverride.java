@@ -52,16 +52,16 @@ public class ParticleRainOverride extends ParticleRain {
 		if (this.posY < 1)
 			return;
 
-		final int x = MathHelper.floor_double(this.posX);
-		final int y = MathHelper.floor_double(this.posY + 0.3D);
-		final int z = MathHelper.floor_double(this.posZ);
+		final int x = MathHelper.floor(this.posX);
+		final int y = MathHelper.floor(this.posY + 0.3D);
+		final int z = MathHelper.floor(this.posZ);
 		BlockPos pos = new BlockPos(x, y, z);
-		IBlockState state = worldObj.getBlockState(pos);
+		IBlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
-		if (!block.isAir(state, this.worldObj, pos) && !block.isLeaves(state, this.worldObj, pos)) {
+		if (!block.isAir(state, this.world, pos) && !block.isLeaves(state, this.world, pos)) {
 			// Find out where it is going to hit
 			BlockPos soundPos = pos.down();
-			while (soundPos.getY() > 0 && worldObj.isAirBlock(soundPos))
+			while (soundPos.getY() > 0 && world.isAirBlock(soundPos))
 				soundPos = soundPos.down();
 
 			if (soundPos.getY() > 0 && state.getMaterial().isSolid()) {
@@ -74,7 +74,7 @@ public class ParticleRainOverride extends ParticleRain {
 
 	public static class Factory implements IParticleFactory
 	{
-		public Particle getEntityFX(int particleID, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int... p_178902_15_)
+		public Particle createParticle(int particleID, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int... p_178902_15_)
 		{
 			return new ParticleRainOverride(worldIn, xCoordIn, yCoordIn, zCoordIn);
 		}

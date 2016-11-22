@@ -81,7 +81,7 @@ public final class DimensionEffectData implements INBTSerialization {
 	}
 
 	public void setRainIntensity(final float intensity) {
-		this.intensity = MathHelper.clamp_float(intensity, MIN_INTENSITY, MAX_INTENSITY);
+		this.intensity = MathHelper.clamp(intensity, MIN_INTENSITY, MAX_INTENSITY);
 	}
 
 	public float getMinRainIntensity() {
@@ -89,7 +89,7 @@ public final class DimensionEffectData implements INBTSerialization {
 	}
 
 	public void setMinRainIntensity(final float intensity) {
-		this.minIntensity = MathHelper.clamp_float(intensity, MIN_INTENSITY, this.maxIntensity);
+		this.minIntensity = MathHelper.clamp(intensity, MIN_INTENSITY, this.maxIntensity);
 	}
 
 	public float getMaxRainIntensity() {
@@ -97,7 +97,7 @@ public final class DimensionEffectData implements INBTSerialization {
 	}
 
 	public void setMaxRainIntensity(final float intensity) {
-		this.maxIntensity = MathHelper.clamp_float(intensity, this.minIntensity, MAX_INTENSITY);
+		this.maxIntensity = MathHelper.clamp(intensity, this.minIntensity, MAX_INTENSITY);
 	}
 
 	public Set<AuroraData> getAuroraList() {
@@ -113,17 +113,17 @@ public final class DimensionEffectData implements INBTSerialization {
 			final float mid = delta / 2.0F;
 			result = random.nextFloat() * mid + random.nextFloat() * mid;
 		}
-		setRainIntensity(MathHelper.clamp_float(result, 0.01F, MAX_INTENSITY));
+		setRainIntensity(MathHelper.clamp(result, 0.01F, MAX_INTENSITY));
 	}
 
 	@Override
 	public void readFromNBT(@Nonnull final NBTTagCompound nbt) {
 		this.dimensionId = nbt.getInteger(NBT.DIMENSION);
-		this.intensity = MathHelper.clamp_float(nbt.getFloat(NBT.INTENSITY), MIN_INTENSITY, MAX_INTENSITY);
+		this.intensity = MathHelper.clamp(nbt.getFloat(NBT.INTENSITY), MIN_INTENSITY, MAX_INTENSITY);
 		if (nbt.hasKey(NBT.MIN_INTENSITY))
-			this.minIntensity = MathHelper.clamp_float(nbt.getFloat(NBT.MIN_INTENSITY), MIN_INTENSITY, MAX_INTENSITY);
+			this.minIntensity = MathHelper.clamp(nbt.getFloat(NBT.MIN_INTENSITY), MIN_INTENSITY, MAX_INTENSITY);
 		if (nbt.hasKey(NBT.MAX_INTENSITY))
-			this.maxIntensity = MathHelper.clamp_float(nbt.getFloat(NBT.MAX_INTENSITY), this.minIntensity,
+			this.maxIntensity = MathHelper.clamp(nbt.getFloat(NBT.MAX_INTENSITY), this.minIntensity,
 					MAX_INTENSITY);
 		final NBTTagList list = nbt.getTagList(NBT.AURORA_LIST, Constants.NBT.TAG_COMPOUND);
 		for (int i = 0; i < list.tagCount(); i++) {

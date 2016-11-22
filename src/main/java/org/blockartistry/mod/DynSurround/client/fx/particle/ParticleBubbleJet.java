@@ -39,7 +39,7 @@ public class ParticleBubbleJet extends ParticleJet {
 
 	@Override
 	protected Particle getJetParticle() {
-		return new ParticleBubble.Factory().getEntityFX(0, this.worldObj, this.posX, this.posY, this.posZ, 0.0D,
+		return new ParticleBubble.Factory().createParticle(0, this.world, this.posX, this.posY, this.posZ, 0.0D,
 				0.5D + this.jetStrength / 10.0D, 0.0D);
 	}
 }

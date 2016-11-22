@@ -41,7 +41,7 @@ public class WorldUtils {
 	}
 	
 	public static boolean isDimensionHasSky(final WorldProvider provider) {
-		if (provider.getHasNoSky())
+		if (provider.hasNoSky())
 			return false;
 
 		final String name = provider.getDimensionType().getName();

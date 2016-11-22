@@ -68,7 +68,7 @@ public class StormRenderer extends IAtmosRenderer {
 			for (int j = 0; j < 32; ++j) {
 				final float f2 = (float) (j - 16);
 				final float f3 = (float) (i - 16);
-				final float f4 = MathHelper.sqrt_float(f2 * f2 + f3 * f3);
+				final float f4 = MathHelper.sqrt(f2 * f2 + f3 * f3);
 				RAIN_X_COORDS[i << 5 | j] = -f3 / f4;
 				RAIN_Y_COORDS[i << 5 | j] = f2 / f4;
 			}
@@ -112,9 +112,9 @@ public class StormRenderer extends IAtmosRenderer {
 		renderer.enableLightmap();
 
 		final Entity entity = renderer.mc.getRenderViewEntity();
-		final int playerX = MathHelper.floor_double(entity.posX);
-		final int playerY = MathHelper.floor_double(entity.posY);
-		final int playerZ = MathHelper.floor_double(entity.posZ);
+		final int playerX = MathHelper.floor(entity.posX);
+		final int playerY = MathHelper.floor(entity.posY);
+		final int playerZ = MathHelper.floor(entity.posZ);
 		final Tessellator tess = Tessellator.getInstance();
 		final VertexBuffer worldrenderer = tess.getBuffer();
 
@@ -128,7 +128,7 @@ public class StormRenderer extends IAtmosRenderer {
 		final double spawnY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double) partialTicks;
 		final double spawnZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double) partialTicks;
 
-		final int locY = MathHelper.floor_double(spawnY);
+		final int locY = MathHelper.floor(spawnY);
 		final int range = renderer.mc.gameSettings.fancyGraphics ? 10 : 5;
 
 		int j1 = -1;
@@ -190,7 +190,7 @@ public class StormRenderer extends IAtmosRenderer {
 									+ (double) partialTicks) / 32.0D * (3.0D + random.nextDouble());
 							double d6 = (double) ((float) gridX + 0.5F) - entity.posX;
 							double d7 = (double) ((float) gridZ + 0.5F) - entity.posZ;
-							float f3 = MathHelper.sqrt_double(d6 * d6 + d7 * d7) / (float) range;
+							float f3 = MathHelper.sqrt(d6 * d6 + d7 * d7) / (float) range;
 							float f4 = ((1.0F - f3 * f3) * 0.5F + 0.5F) * alphaRatio;
 							mutable.setPos(gridX, i3, gridZ);
 							int j3 = world.getCombinedLight(mutable, 0);
@@ -246,7 +246,7 @@ public class StormRenderer extends IAtmosRenderer {
 							double d10 = random.nextDouble() + (double) (f1 * (float) random.nextGaussian()) * 0.001D;
 							double d11 = (double) ((float) gridX + 0.5F) - entity.posX;
 							double d12 = (double) ((float) gridZ + 0.5F) - entity.posZ;
-							float f6 = MathHelper.sqrt_double(d11 * d11 + d12 * d12) / (float) range;
+							float f6 = MathHelper.sqrt(d11 * d11 + d12 * d12) / (float) range;
 							float f5 = ((1.0F - f6 * f6) * 0.3F + 0.5F) * alphaRatio;
 							mutable.setPos(gridX, i3, gridZ);
 							int i4 = (world.getCombinedLight(mutable, 0) * 3 + 15728880) / 4;

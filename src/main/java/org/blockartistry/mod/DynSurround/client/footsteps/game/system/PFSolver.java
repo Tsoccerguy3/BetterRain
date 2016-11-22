@@ -85,22 +85,22 @@ public class PFSolver implements ISolver {
 	@Override
 	public Association findAssociationForPlayer(final EntityPlayer ply, final double verticalOffsetAsMinus,
 			final boolean isRightFoot) {
-		final int yy = MathHelper.floor_double(ply.getEntityBoundingBox().minY - 0.1d - verticalOffsetAsMinus);
+		final int yy = MathHelper.floor(ply.getEntityBoundingBox().minY - 0.1d - verticalOffsetAsMinus);
 		final double rot = MathStuff.toRadians(MathHelper.wrapDegrees(ply.rotationYaw));
 		final double xn = MathStuff.cos(rot);
 		final double zn = MathStuff.sin(rot);
 		final float feetDistanceToCenter = 0.2f * (isRightFoot ? -1 : 1);
-		final int xx = MathHelper.floor_double(ply.posX + xn * feetDistanceToCenter);
-		final int zz = MathHelper.floor_double(ply.posZ + zn * feetDistanceToCenter);
+		final int xx = MathHelper.floor(ply.posX + xn * feetDistanceToCenter);
+		final int zz = MathHelper.floor(ply.posZ + zn * feetDistanceToCenter);
 
 		return findAssociationForLocation(ply, new BlockPos(xx, yy, zz));
 	}
 
 	@Override
 	public Association findAssociationForPlayer(final EntityPlayer ply, final double verticalOffsetAsMinus) {
-		final int yy = MathHelper.floor_double(ply.posY - 0.1d - ply.getYOffset() - verticalOffsetAsMinus);
-		final int xx = MathHelper.floor_double(ply.posX);
-		final int zz = MathHelper.floor_double(ply.posZ);
+		final int yy = MathHelper.floor(ply.posY - 0.1d - ply.getYOffset() - verticalOffsetAsMinus);
+		final int xx = MathHelper.floor(ply.posX);
+		final int zz = MathHelper.floor(ply.posZ);
 		return findAssociationForLocation(ply, new BlockPos(xx, yy, zz));
 	}
 
@@ -303,7 +303,7 @@ public class PFSolver implements ISolver {
 	@Override
 	public boolean playSpecialStoppingConditions(final EntityPlayer ply) {
 		if (ply.isInWater()) {
-			final float volume = MathHelper.sqrt_double(
+			final float volume = MathHelper.sqrt(
 					ply.motionX * ply.motionX * 0.2d + ply.motionY * ply.motionY + ply.motionZ * ply.motionZ * 0.2d)
 					* 0.35f;
 			final ConfigOptions options = new ConfigOptions();

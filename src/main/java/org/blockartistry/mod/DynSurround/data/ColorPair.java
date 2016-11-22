@@ -69,7 +69,7 @@ public final class ColorPair {
 	}
 
 	public static ColorPair get(final int id) {
-		return PAIRS.get(MathHelper.clamp_int(id, 0, PAIRS.size() - 1));
+		return PAIRS.get(MathHelper.clamp(id, 0, PAIRS.size() - 1));
 	}
 
 	public static int randomId() {

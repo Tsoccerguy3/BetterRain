@@ -50,12 +50,12 @@ public class ParticleSteamJet extends ParticleJet {
 			}
 
 			this.setParticleTextureIndex(7 - this.particleAge * 8 / this.particleMaxAge);
-			this.moveEntity(this.motionX, this.motionY, this.motionZ);
+			this.move(this.motionX, this.motionY, this.motionZ);
 			this.motionX *= 0.9599999785423279D;
 			this.motionY *= 0.9599999785423279D;
 			this.motionZ *= 0.9599999785423279D;
 
-			if (this.isCollided) {
+			if (this.onGround) {
 				this.motionX *= 0.699999988079071D;
 				this.motionZ *= 0.699999988079071D;
 			}
@@ -70,7 +70,7 @@ public class ParticleSteamJet extends ParticleJet {
 	protected Particle getJetParticle() {
 		final double motionX = RANDOM.nextGaussian() * 0.02D;
 		final double motionZ = RANDOM.nextGaussian() * 0.02D;
-		return new ParticleSteamCloud(this.worldObj, this.posX, this.posY, this.posZ, motionX, 0.1F, motionZ);
+		return new ParticleSteamCloud(this.world, this.posX, this.posY, this.posZ, motionX, 0.1F, motionZ);
 	}
 
 }

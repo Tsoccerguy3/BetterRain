@@ -131,7 +131,7 @@ public final class ServerEffectHandler {
 			tickCounters.put(world.provider.getDimension(), tickCount);
 			if (tickCount % CHECK_INTERVAL == 0) {
 				if (okToSpawnAurora(world)) {
-					final List<EntityPlayerMP> players = event.world.getMinecraftServer().getPlayerList().getPlayerList();
+					final List<EntityPlayerMP> players = event.world.getMinecraftServer().getPlayerList().getPlayers();
 
 					for (final EntityPlayerMP player : players) {
 						if (!BiomeRegistry.hasAurora(PlayerUtils.getPlayerBiome(player, false)))

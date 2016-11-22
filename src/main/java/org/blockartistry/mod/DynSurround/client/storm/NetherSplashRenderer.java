@@ -48,13 +48,13 @@ public class NetherSplashRenderer extends StormSplashRenderer {
 	protected Particle getBlockParticle(final IBlockState block, final boolean dust, final World world, final double x,
 			final double y, final double z) {
 		if (dust)
-			return ParticleFactory.smoke.getEntityFX(0, world, x, y, z, 0, 0, 0);
+			return ParticleFactory.smoke.createParticle(0, world, x, y, z, 0, 0, 0);
 		return null;
 	}
 
 	@Override
 	protected BlockPos getPrecipitationHeight(final World world, final int range, final BlockPos pos) {
-		final int y = MathHelper.floor_double(EnvironState.getPlayer().posY);
+		final int y = MathHelper.floor(EnvironState.getPlayer().posY);
 		boolean airBlockFound = false;
 		for (int i = range; i >= -range; i--) {
 			final BlockPos p = new BlockPos(pos.getX(), y + i, pos.getZ());

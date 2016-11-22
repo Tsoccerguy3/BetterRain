@@ -61,7 +61,7 @@ public final class AuroraPreset {
 	}
 
 	public static AuroraPreset get(final int id) {
-		return PRESET.get(MathHelper.clamp_int(id, 0, PRESET.size() - 1));
+		return PRESET.get(MathHelper.clamp(id, 0, PRESET.size() - 1));
 	}
 
 	public static int randomId() {

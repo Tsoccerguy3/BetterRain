@@ -114,7 +114,7 @@ public class GenerateBlockReport {
 			if (block instanceof BlockTorch) {
 				soundName += "," + "EXTENDS_TORCH";
 			}
-			if (!block.isVisuallyOpaque()) { // TODO resolve
+			if (!block.isFullyOpaque(block.getDefaultState())) { // TODO resolve
 				soundName += "," + "HITBOX";
 			}
 

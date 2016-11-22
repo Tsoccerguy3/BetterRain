@@ -64,17 +64,17 @@ public final class CommandRain extends CommandBase {
 	}
 
 	@Override
-	public String getCommandName() {
+	public String getName() {
 		return "rain";
 	}
 
 	@Override
-	public List<String> getCommandAliases() {
+	public List<String> getAliases() {
 		return ALIAS;
 	}
 
 	@Override
-	public String getCommandUsage(final ICommandSender p_71518_1_) {
+	public String getUsage(final ICommandSender p_71518_1_) {
 		return "/rain <status | reset | reload | 1-100 | <<setmax|setmin> 0-100>";
 	}
 
@@ -83,42 +83,42 @@ public final class CommandRain extends CommandBase {
 
 		try {
 			final EntityPlayerMP player = getCommandSenderAsPlayer(sender);
-			final World world = player.worldObj;
+			final World world = player.world;
 			final DimensionEffectData data = DimensionEffectData.get(world);
 
 			if (parms.length == 1) {
 				if ("status".compareToIgnoreCase(parms[0]) == 0) {
 					// Dump out some diagnostics for the currentAurora dimension
-					player.addChatMessage(new TextComponentTranslation(statusOutput(world, data)));
+					player.sendMessage(new TextComponentTranslation(statusOutput(world, data)));
 				} else if ("reset".compareToIgnoreCase(parms[0]) == 0) {
 					world.provider.resetRainAndThunder();
-					player.addChatMessage(new TextComponentTranslation("msg.RainReset"));
+					player.sendMessage(new TextComponentTranslation("msg.RainReset"));
 				} else if("reload".compareToIgnoreCase(parms[0]) == 0) {
 					BiomeRegistry.initialize();
 					BlockRegistry.initialize();
-					player.addChatMessage(new TextComponentTranslation("msg.BiomeReload"));
+					player.sendMessage(new TextComponentTranslation("msg.BiomeReload"));
 				} else {
 					final double d = parseDouble(parms[0], 0.0D, 100.0D) / 100.0D;
 					data.setRainIntensity((float) d);
-					player.addChatMessage(new TextComponentTranslation(
+					player.sendMessage(new TextComponentTranslation(
 							"msg.RainIntensitySet", FORMATTER.format(data.getRainIntensity() * 100)));
 				}
 			} else if (parms.length == 2) {
 				if ("setmin".compareToIgnoreCase(parms[0]) == 0) {
 					final double d = parseDouble(parms[1], 0.0D, 100.0D) / 100.0D;
 					data.setMinRainIntensity((float) d);
-					player.addChatMessage(new TextComponentTranslation(
+					player.sendMessage(new TextComponentTranslation(
 							"msg.MinRainIntensitySet", FORMATTER.format(data.getMinRainIntensity() * 100)));
 				} else if ("setmax".compareToIgnoreCase(parms[0]) == 0) {
 					final double d = parseDouble(parms[1], 0.0D, 100.0D) / 100.0D;
 					data.setMaxRainIntensity((float) d);
-					player.addChatMessage(new TextComponentTranslation(
+					player.sendMessage(new TextComponentTranslation(
 							"msg.MaxRainIntensitySet", FORMATTER.format(data.getMaxRainIntensity() * 100)));
 				} else {
-					throw new CommandException(getCommandUsage(sender));
+					throw new CommandException(getUsage(sender));
 				}
 			} else {
-				player.addChatMessage(new TextComponentString(getCommandUsage(sender)));
+				player.sendMessage(new TextComponentString(getUsage(sender)));
 			}
 		} catch (final Exception ex) {
 			ex.printStackTrace();

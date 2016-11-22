@@ -57,7 +57,7 @@ public class ParticleFountainJet extends ParticleJet {
 	protected Particle getJetParticle() {
 		final double motionX = RANDOM.nextGaussian() * 0.03D;
 		final double motionZ = RANDOM.nextGaussian() * 0.03D;
-		return new ParticleFoundtain(this.worldObj, this.posX, this.posY, this.posZ, motionX, 0.5D, motionZ,
+		return new ParticleFoundtain(this.world, this.posX, this.posY, this.posZ, motionX, 0.5D, motionZ,
 				this.block).init();
 	}
 

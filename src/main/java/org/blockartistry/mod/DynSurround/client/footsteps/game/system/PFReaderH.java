@@ -268,9 +268,9 @@ public class PFReaderH implements IGenerator, IVariatorSettable {
 		if ((ply.motionX == 0d && ply.motionZ == 0d) || ply.isSneaking())
 			return;
 
-		final int yy = MathHelper.floor_double(ply.posY - 0.1d - ply.getYOffset() - (ply.onGround ? 0d : 0.25d));
+		final int yy = MathHelper.floor(ply.posY - 0.1d - ply.getYOffset() - (ply.onGround ? 0d : 0.25d));
 		final Association assos = mod.getSolver().findAssociationForBlock(
-				new BlockPos(MathHelper.floor_double(ply.posX), yy, MathHelper.floor_double(ply.posZ)), "find_messy_foliage");
+				new BlockPos(MathHelper.floor(ply.posX), yy, MathHelper.floor(ply.posZ)), "find_messy_foliage");
 		if (assos != null) {
 			if (!this.isMessyFoliage) {
 				this.isMessyFoliage = true;
@@ -305,6 +305,6 @@ public class PFReaderH implements IGenerator, IVariatorSettable {
 	}
 
 	protected float scalex(final float number, final float min, final float max) {
-		return MathHelper.clamp_float((number - min) / (max - min), 0.0F, 1.0F);
+		return MathHelper.clamp((number - min) / (max - min), 0.0F, 1.0F);
 	}
 }

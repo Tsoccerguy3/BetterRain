@@ -185,7 +185,7 @@ public class SoundManager {
 
 		if (ModOptions.autoConfigureChannels && totalChannels > 64) {
 			final int maxCount = Math.max((totalChannels + 1) / 2, 32);
-			normalChannels = MathHelper.floor_float(maxCount * 0.875F);
+			normalChannels = MathHelper.floor(maxCount * 0.875F);
 			streamChannels = maxCount - normalChannels;
 		}
 

@@ -54,10 +54,10 @@ public final class DimensionEffectDataFile extends WorldSavedData {
 	}
 
 	private static DimensionEffectDataFile getFile(@Nonnull final World world) {
-		DimensionEffectDataFile data = (DimensionEffectDataFile) world.loadItemData(DimensionEffectDataFile.class, IDENTIFIER);
+		DimensionEffectDataFile data = (DimensionEffectDataFile) world.loadData(DimensionEffectDataFile.class, IDENTIFIER);
 		if (data == null) {
 			data = new DimensionEffectDataFile();
-			world.setItemData(IDENTIFIER, data);
+			world.setData(IDENTIFIER, data);
 		}
 		data.markDirty();
 		return data;

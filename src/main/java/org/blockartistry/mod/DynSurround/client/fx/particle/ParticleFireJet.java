@@ -53,18 +53,18 @@ public class ParticleFireJet extends ParticleJet {
 
 	@Override
 	public void playSound() {
-		final int x = MathHelper.floor_double(this.posX);
-		final int y = MathHelper.floor_double(this.posY);
-		final int z = MathHelper.floor_double(this.posZ);
+		final int x = MathHelper.floor(this.posX);
+		final int y = MathHelper.floor(this.posY);
+		final int z = MathHelper.floor(this.posZ);
 		SoundManager.playSoundAt(new BlockPos(x, y, z), FIRE, 0, SoundCategory.BLOCKS);
 	}
 
 	@Override
 	protected Particle getJetParticle() {
 		if (this.isLava) {
-			return new ParticleLava.Factory().getEntityFX(0, this.worldObj, this.posX, this.posY, this.posZ, 0, 0, 0);
+			return new ParticleLava.Factory().createParticle(0, this.world, this.posX, this.posY, this.posZ, 0, 0, 0);
 		}
-		final ParticleFlame flame = (ParticleFlame) new ParticleFlame.Factory().getEntityFX(0, this.worldObj, this.posX,
+		final ParticleFlame flame = (ParticleFlame) new ParticleFlame.Factory().createParticle(0, this.world, this.posX,
 				this.posY, this.posZ, 0.0D, this.jetStrength / 10.0D, 0.0D);
 		flame.flameScale *= this.jetStrength;// TODO AT
 		return flame;

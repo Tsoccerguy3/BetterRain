@@ -61,9 +61,9 @@ class PlayerSound extends MovingSound {
 
 		final EntityPlayer player = EnvironState.getPlayer();
 		// Initial position
-		this.xPosF = MathHelper.floor_double(player.posX);
-		this.yPosF = MathHelper.floor_double(player.posY + 1);
-		this.zPosF = MathHelper.floor_double(player.posZ);
+		this.xPosF = MathHelper.floor(player.posX);
+		this.yPosF = MathHelper.floor(player.posY + 1);
+		this.zPosF = MathHelper.floor(player.posZ);
 	}
 
 	public void fadeAway() {
@@ -87,9 +87,9 @@ class PlayerSound extends MovingSound {
 			this.donePlaying = true;
 		} else if (EnvironState.getPlayer() != null) {
 			final EntityPlayer player = EnvironState.getPlayer();
-			this.xPosF = MathHelper.floor_double(player.posX);
-			this.yPosF = MathHelper.floor_double(player.posY + 1);
-			this.zPosF = MathHelper.floor_double(player.posZ);
+			this.xPosF = MathHelper.floor(player.posX);
+			this.yPosF = MathHelper.floor(player.posY + 1);
+			this.zPosF = MathHelper.floor(player.posZ);
 		}
 	}
 

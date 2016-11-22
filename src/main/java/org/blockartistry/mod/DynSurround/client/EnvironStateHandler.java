@@ -243,7 +243,7 @@ public class EnvironStateHandler implements IClientEffectHandler {
 
 		public static EntityPlayer getPlayer() {
 			if (player == null)
-				player = Minecraft.getMinecraft().thePlayer;
+				player = Minecraft.getMinecraft().player;
 			return player;
 		}
 
@@ -348,7 +348,7 @@ public class EnvironStateHandler implements IClientEffectHandler {
 		}
 
 		public static World getWorld() {
-			return getPlayer().worldObj;
+			return getPlayer().world;
 		}
 
 		public static int getTickCounter() {
@@ -381,19 +381,19 @@ public class EnvironStateHandler implements IClientEffectHandler {
 
 	@SubscribeEvent
 	public void onJump(final LivingJumpEvent event) {
-		if (JUMP == null || event.getEntity() == null || event.getEntity().worldObj == null)
+		if (JUMP == null || event.getEntity() == null || event.getEntity().world == null)
 			return;
 
-		if (event.getEntity().worldObj.isRemote && EnvironState.isPlayer(event.getEntity()))
+		if (event.getEntity().world.isRemote && EnvironState.isPlayer(event.getEntity()))
 			SoundManager.playSoundAtPlayer(EnvironState.getPlayer(), JUMP, event.getEntity().getSoundCategory());
 	}
 
 	@SubscribeEvent
 	public void onAttack(final AttackEntityEvent event) {
-		if (SWORD == null || event.getEntityPlayer() == null || event.getEntityPlayer().worldObj == null)
+		if (SWORD == null || event.getEntityPlayer() == null || event.getEntityPlayer().world == null)
 			return;
 
-		if (event.getEntityPlayer().worldObj.isRemote && EnvironState.isPlayer(event.getEntityPlayer())) {
+		if (event.getEntityPlayer().world.isRemote && EnvironState.isPlayer(event.getEntityPlayer())) {
 			final ItemStack currentItem = event.getEntityPlayer().getHeldItemMainhand();
 			if (currentItem != null) {
 				SoundEffect sound = null;
@@ -413,10 +413,10 @@ public class EnvironStateHandler implements IClientEffectHandler {
 
 	@SubscribeEvent
 	public void onCrafting(final ItemCraftedEvent event) {
-		if (CRAFTING == null || event.player == null || event.player.worldObj == null)
+		if (CRAFTING == null || event.player == null || event.player.world == null)
 			return;
 
-		if (event.player.worldObj.isRemote && EnvironState.isPlayer(event.player)) {
+		if (event.player.world.isRemote && EnvironState.isPlayer(event.player)) {
 			if (craftSoundThrottle < (EnvironState.getTickCounter() - 30)) {
 				craftSoundThrottle = EnvironState.getTickCounter();
 				SoundManager.playSoundAtPlayer(EnvironState.getPlayer(), CRAFTING, SoundCategory.PLAYERS);
@@ -427,11 +427,11 @@ public class EnvironStateHandler implements IClientEffectHandler {
 
 	@SubscribeEvent
 	public void onItemUse(final LivingEntityUseItemEvent.Start event) {
-		if (BOW_PULL == null || event.getEntityLiving() == null || event.getEntityLiving().worldObj == null || event.getItem() == null
+		if (BOW_PULL == null || event.getEntityLiving() == null || event.getEntityLiving().world == null || event.getItem() == null
 				|| event.getItem().getItem() == null)
 			return;
 
-		if (event.getEntityLiving().worldObj.isRemote && event.getItem().getItem() instanceof ItemBow) {
+		if (event.getEntityLiving().world.isRemote && event.getItem().getItem() instanceof ItemBow) {
 			SoundManager.playSoundAtPlayer(EnvironState.getPlayer(), BOW_PULL, event.getEntityLiving().getSoundCategory());
 		}
 	}

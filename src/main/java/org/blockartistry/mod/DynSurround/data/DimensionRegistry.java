@@ -33,14 +33,10 @@ import org.blockartistry.mod.DynSurround.Module;
 import org.blockartistry.mod.DynSurround.data.config.DimensionConfig;
 import org.blockartistry.mod.DynSurround.util.DiurnalUtils;
 
-import foxie.calendar.api.CalendarAPI;
-import foxie.calendar.api.ICalendarProvider;
-import foxie.calendar.api.ISeasonProvider;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldType;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.Loader;
 
 public final class DimensionRegistry {
@@ -160,11 +156,11 @@ public final class DimensionRegistry {
 			if (this.skyHeight == null)
 				this.skyHeight = provider.getHeight();
 			if (this.hasHaze == null)
-				this.hasHaze = !provider.getHasNoSky();
+				this.hasHaze = !provider.hasNoSky();
 			if (this.hasAuroras == null)
-				this.hasAuroras = !provider.getHasNoSky();
+				this.hasAuroras = !provider.hasNoSky();
 			if (this.hasWeather == null)
-				this.hasWeather = !provider.getHasNoSky();
+				this.hasWeather = !provider.hasNoSky();
 			if (this.cloudHeight == null)
 				this.cloudHeight = this.hasHaze ? this.skyHeight / 2 : this.skyHeight;
 			if (this.spaceHeight == null)
@@ -212,10 +208,10 @@ public final class DimensionRegistry {
 	}
 
 	public String getSeason() {
-		if (!CALENDAR_API)
+		//if (!CALENDAR_API)
 			return SEASON_NOT_AVAILABLE;
 
-		final ISeasonProvider provider = CalendarAPI.getSeasonProvider(this.dimensionId);
+		/*final ISeasonProvider provider = CalendarAPI.getSeasonProvider(this.dimensionId);
 		if (provider == null)
 			return SEASON_NOT_AVAILABLE;
 
@@ -227,7 +223,7 @@ public final class DimensionRegistry {
 		if (calendar == null)
 			return SEASON_NOT_AVAILABLE;
 
-		return provider.getSeason(calendar).getName();
+		return provider.getSeason(calendar).getName();*/
 	}
 
 	public static DimensionRegistry getData(final World world) {

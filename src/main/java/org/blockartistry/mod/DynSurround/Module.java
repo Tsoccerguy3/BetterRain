@@ -40,7 +40,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 @net.minecraftforge.fml.common.Mod(modid = Module.MOD_ID, useMetadata = true,
-acceptedMinecraftVersions="[1.9.4, 1.11.0)",
+acceptedMinecraftVersions="[1.11.0, 1.12.0)",
 dependencies = Module.DEPENDENCIES, version = Module.VERSION, guiFactory = Module.GUI_FACTORY)
 public class Module {
 	public static final String MOD_ID = "dsurroundunofficial";

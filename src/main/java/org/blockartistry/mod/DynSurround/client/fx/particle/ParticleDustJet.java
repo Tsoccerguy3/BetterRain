@@ -55,7 +55,7 @@ public class ParticleDustJet extends ParticleJet {
 
 	@Override
 	protected Particle getJetParticle() {
-		return new ParticleDust(this.worldObj, this.posX, this.posY, this.posZ, this.blockState).init();
+		return new ParticleDust(this.world, this.posX, this.posY, this.posZ, this.blockState).init();
 	}
 
 }

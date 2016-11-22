@@ -24,6 +24,7 @@
 
 package org.blockartistry.mod.DynSurround.client;
 
+import org.blockartistry.mod.DynSurround.ModLog;
 import org.blockartistry.mod.DynSurround.ModOptions;
 import org.blockartistry.mod.DynSurround.client.EnvironStateHandler.EnvironState;
 import org.blockartistry.mod.DynSurround.client.storm.StormProperties;
@@ -37,6 +38,7 @@ import org.lwjgl.opengl.GL11;
 import gnu.trove.map.hash.TObjectIntHashMap;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -87,7 +89,7 @@ public class FogEffectHandler implements IClientEffectHandler {
 		final float factor = 1.0F + world.getRainStrength(1.0F);
 		final float skyHeight = DimensionRegistry.getSkyHeight(world) / factor;
 		final float groundLevel = DimensionRegistry.getSeaLevel(world);
-		final float ratio = (MathHelper.floor_double(player.posY + player.getEyeHeight()) - groundLevel)
+		final float ratio = (MathHelper.floor(player.posY + player.getEyeHeight()) - groundLevel)
 				/ (skyHeight - groundLevel);
 		return ratio * ratio * ratio * ratio * ModOptions.elevationHazeFactor;
 	}
@@ -136,6 +138,15 @@ public class FogEffectHandler implements IClientEffectHandler {
 		currentFogLevel = Math.max(biomeFog, Math.max(dustFog, heightFog));
 		insideFogOffset = PlayerUtils.ceilingCoverageRatio(player) * 15.0F;
 	}
+	
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void fogDensityEvent(final EntityViewRenderEvent.FogDensity event) {
+		//ModLog.info("Fog Density Event Called");
+		//if(Minecraft.getMinecraft().thePlayer.isInWater()) {
+		//	event.setDensity(0.1f);
+		//	event.setCanceled(true);
+		//}
+	}
 
 	/*
 	 * Hook the fog color event so we can tell the renderer what color the fog
@@ -149,7 +160,7 @@ public class FogEffectHandler implements IClientEffectHandler {
 		if (currentFogLevel == 0)
 			return;
 
-		final IBlockState block = ActiveRenderInfo.getBlockStateAtEntityViewpoint(event.getEntity().worldObj, event.getEntity(),
+		final IBlockState block = ActiveRenderInfo.getBlockStateAtEntityViewpoint(event.getEntity().world, event.getEntity(),
 				(float) event.getRenderPartialTicks());
 		if (block.getMaterial() == Material.LAVA || block.getMaterial() == Material.WATER)
 			return;

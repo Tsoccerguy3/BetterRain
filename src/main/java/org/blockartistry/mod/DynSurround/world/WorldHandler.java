@@ -82,7 +82,7 @@ public class WorldHandler {
 
 		world.prevThunderingStrength = world.thunderingStrength;
 		world.thunderingStrength += info.isThundering() ? STRENGTH_ADJUST : -STRENGTH_ADJUST;
-		world.thunderingStrength = MathHelper.clamp_float(world.thunderingStrength, 0.0F, 1.0F);
+		world.thunderingStrength = MathHelper.clamp(world.thunderingStrength, 0.0F, 1.0F);
 
 		int j = info.getRainTime();
 

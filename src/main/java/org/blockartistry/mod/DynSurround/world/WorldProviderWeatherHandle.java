@@ -121,8 +121,8 @@ public class WorldProviderWeatherHandle extends WorldProviderShimBase {
 	
 	@Override
 	public void updateWeather() {
-		if(!worldObj.isRemote && this.patchWeather) {
-			WorldHandler.updateWeatherBody(this.worldObj);
+		if(!world.isRemote && this.patchWeather) {
+			WorldHandler.updateWeatherBody(this.world);
 			return;
 		}
 

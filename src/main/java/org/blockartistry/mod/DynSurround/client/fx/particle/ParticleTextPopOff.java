@@ -63,7 +63,7 @@ public class ParticleTextPopOff extends Particle {
 		this.motionY = dY;
 		this.motionZ = dZ;
 		final float dist = MathHelper
-				.sqrt_double(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
+				.sqrt(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
 		this.motionX = (this.motionX / dist * 0.12D);
 		this.motionY = (this.motionY / dist * 0.12D);
 		this.motionZ = (this.motionZ / dist * 0.12D);
@@ -113,8 +113,8 @@ public class ParticleTextPopOff extends Particle {
 
 		final FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
 		fontRenderer.drawStringWithShadow(this.text,
-				-MathHelper.floor_float(fontRenderer.getStringWidth(this.text) / 2.0F) + 1,
-				-MathHelper.floor_float(fontRenderer.FONT_HEIGHT / 2.0F) + 1, this.renderColor.rgb());
+				-MathHelper.floor(fontRenderer.getStringWidth(this.text) / 2.0F) + 1,
+				-MathHelper.floor(fontRenderer.FONT_HEIGHT / 2.0F) + 1, this.renderColor.rgb());
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glDepthFunc(515);

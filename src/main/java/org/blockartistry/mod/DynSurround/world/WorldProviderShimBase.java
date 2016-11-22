@@ -54,7 +54,7 @@ public class WorldProviderShimBase extends WorldProvider {
 
 	public WorldProviderShimBase(final World world, final WorldProvider provider) {
 		this.provider = provider;
-		this.worldObj = world;
+		this.world = world;
 	}
 
 	@Override
@@ -190,9 +190,15 @@ public class WorldProviderShimBase extends WorldProvider {
 	}
 
 	@Override
-	public boolean getHasNoSky()
+	public boolean hasNoSky()
 	{
-		return provider.getHasNoSky();
+		return provider.hasNoSky();
+	}
+	
+	@Override
+	public boolean hasSkyLight()
+	{
+		return provider.hasSkyLight();
 	}
 
 	@Override

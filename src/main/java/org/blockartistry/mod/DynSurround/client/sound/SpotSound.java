@@ -68,11 +68,11 @@ public class SpotSound extends PositionedSound {
 		this.repeat = false;
 		this.repeatDelay = 0;
 
-		this.xPosF = MathHelper.floor_double(player.posX + EnvironState.RANDOM.nextInt(SPOT_SOUND_RANGE)
+		this.xPosF = MathHelper.floor(player.posX + EnvironState.RANDOM.nextInt(SPOT_SOUND_RANGE)
 				- EnvironState.RANDOM.nextInt(SPOT_SOUND_RANGE));
-		this.yPosF = MathHelper.floor_double(player.posY + 1 + EnvironState.RANDOM.nextInt(SPOT_SOUND_RANGE)
+		this.yPosF = MathHelper.floor(player.posY + 1 + EnvironState.RANDOM.nextInt(SPOT_SOUND_RANGE)
 				- EnvironState.RANDOM.nextInt(SPOT_SOUND_RANGE));
-		this.zPosF = MathHelper.floor_double(player.posZ + EnvironState.RANDOM.nextInt(SPOT_SOUND_RANGE)
+		this.zPosF = MathHelper.floor(player.posZ + EnvironState.RANDOM.nextInt(SPOT_SOUND_RANGE)
 				- EnvironState.RANDOM.nextInt(SPOT_SOUND_RANGE));
 
 		this.timeMark = EnvironState.getTickCounter();

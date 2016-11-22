@@ -94,12 +94,12 @@ public class ClientEffectHandler {
 		if (Minecraft.getMinecraft().isGamePaused())
 			return;
 
-		final World world = FMLClientHandler.instance().getClient().theWorld;
+		final World world = FMLClientHandler.instance().getClient().world;
 		if (world == null)
 			return;
 
 		if (event.phase == Phase.START) {
-			final EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
+			final EntityPlayer player = FMLClientHandler.instance().getClient().player;
 			for (final IClientEffectHandler handler : effectHandlers)
 				handler.process(world, player);
 		}
@@ -107,7 +107,7 @@ public class ClientEffectHandler {
 	
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void renderTick(final TickEvent.RenderTickEvent event) {
-		WorldClient world = Minecraft.getMinecraft().theWorld;
+		WorldClient world = Minecraft.getMinecraft().world;
 		if(event.phase == Phase.START && world != null) {
 			IRenderHandler weatherRenderer = world.provider.getWeatherRenderer();
 			if(!(weatherRenderer instanceof RenderWeather))
